@@ -1,11 +1,32 @@
 import React from 'react';
 
 function Home() {
-  console.log("Home component renderizado!");
   return (
-    <div style={{backgroundColor: 'red', color: 'white', padding: '20px'}}>
-      <h1>TESTE - MyMediaShelf 📚🎬</h1>
-      <p>Se vês isto, o React está a funcionar!</p>
+    <div id="header" className="Header">
+      <div className="content">
+        <nav className="navbar">
+          <a href="#" onClick={() => window.location.reload()}>
+            <img src="/images/PM_Hub_transparent.png" 
+              className="logo" 
+              alt="PMHub"/>
+          </a>
+          
+          <ul className="nav-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/library">Library</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#contacts">Contacts</a></li>
+          </ul>
+        </nav>
+        <div className="Header-text">
+          <p className="tagline">Personal Media Hub | For Movies, Books, Series & Games</p>
+          <h1>
+            Welcome to <span>PMHub</span><br />
+            your personal media shelf
+          </h1>
+        </div>
+      </div>
     </div>
   );
 }
