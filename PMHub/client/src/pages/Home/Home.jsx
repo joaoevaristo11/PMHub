@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Adiciona este import
 
 function Home() {
+  const navigate = useNavigate(); 
   return (
     <div>
       {/* Navbar separada - fica sempre no topo */}
@@ -53,7 +55,9 @@ function Home() {
               <div className="category-icon">🎬</div>
               <h3>Movies & Series</h3>
               <p>Discover and track your favorite movies, TV shows, cartoons and animes.</p>
-              <button className="category-button">Explore</button>
+              <button className="category-button" 
+                onClick={() => navigate('/movies')} // Adiciona esta linha
+              >Explore</button>
             </div>
             
             <div className="category-card books-card">
