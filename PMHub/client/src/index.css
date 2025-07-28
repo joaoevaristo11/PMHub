@@ -18,7 +18,7 @@ body {
 /*------------- NAVBAR SEPARADA -------------*/
 .navbar {
     background: linear-gradient(to bottom, #531b7e, #000000);
-    padding: 8px 0;
+    padding: -100px 0;
     width: 100%;
 }
 
@@ -26,15 +26,43 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10%;
-    max-width: 1200px;
+    padding: 0 5%;
+    max-width: 1400px;
     margin: 0 auto;
+    position: relative;
 }
 
+/* Animação dourada personalizada */
+@keyframes shineLogoAndBox {
+    0% { 
+        filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
+    }
+    30% { 
+        filter: drop-shadow(0 0 2px gold) 
+                drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+    }
+    100% { 
+        filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
+    }
+}
+
+/* Remove a animação antiga e adiciona a nova */
 .logo {
-    width: 140px;
+    width: 100px;
+    transition: all 0.2s ease;
+    filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
 }
 
+.logo-center:hover .logo {
+    animation-name: shineLogoAndBox;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1; /* Roda só uma vez */
+    transform: scale(1.05) translateY(-8px);
+}
+
+
+/* Menus à esquerda e direita */
 .nav-menu {
     list-style: none;
     display: flex;
@@ -43,27 +71,47 @@ body {
     padding: 0;
 }
 
+.nav-left {
+    justify-content: flex-start;
+}
+
+.nav-right {
+    justify-content: flex-end;
+}
+
 .nav-menu li a {
     text-decoration: none;
     color: #fff;
     font-size: 18px;
     position: relative;
-    transition: color 0.3s ease;
+    padding: 8px 16px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 6px;
 }
 
+/* Linha animada que cresce dos dois lados */
 .nav-menu li a::after {
     content: '';
     width: 0;
     height: 3px;
-    background: linear-gradient(to right, #440475, #58055c);
+    background: linear-gradient(90deg, #9D4EDD, #c146c1, #8B5CF6);
     position: absolute;
-    left: 0;
+    left: 50%;
     bottom: -6px;
-    transition: 0.5s;
+    transform: translateX(-50%);
+    transition: width 0.4s ease;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(157, 78, 221, 0.5);
+}
+
+.nav-menu li a:hover {
+    color: #c146c1;
+    transform: translateY(-4px) scale(1.05);
+    text-shadow: 0 2px 8px rgba(193, 70, 193, 0.3);
 }
 
 .nav-menu li a:hover::after {
-    width: 100%;
+    width: 90%;
 }
 
 /*------------- HERO SECTION -------------*/
@@ -317,6 +365,128 @@ body {
 .about-image img {
   max-width: 125%;
   height: auto;
+}
+
+/*------------- TESTIMONIALS SECTION -------------*/
+.testimonials-section {
+  background: linear-gradient(to bottom, #1a0f2e, #2a1f3d);
+  padding: 80px 0;
+}
+
+.testimonials-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.testimonials-container h2 {
+  font-size: 42px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.testimonials-subtitle {
+  font-size: 18px;
+  color: #AAAAAA;
+  margin-bottom: 60px;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.testimonial-card {
+  background: rgba(157, 78, 221, 0.1);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(157, 78, 221, 0.2);
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  border-color: #9D4EDD;
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #9D4EDD;
+}
+
+.user-info h4 {
+  color: #fff;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating span:first-child {
+  font-size: 14px;
+}
+
+.rating-text {
+  font-size: 14px;
+  color: #AAAAAA;
+  font-weight: 500;
+}
+
+.testimonial-text {
+  color: #DDDDDD;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.testimonial-date {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Stats Section */
+.testimonials-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
+  padding: 40px 0;
+  border-top: 1px solid rgba(157, 78, 221, 0.2);
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: bold;
+  color: #9D4EDD;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: #AAAAAA;
+  font-size: 14px;
 }
 
 /*------------- CONTACT SECTION -------------*/

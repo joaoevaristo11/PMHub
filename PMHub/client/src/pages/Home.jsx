@@ -6,16 +6,23 @@ function Home() {
       {/* Navbar separada - fica sempre no topo */}
       <nav className="navbar">
         <div className="nav-container">
-          <a href="#" onClick={() => window.location.reload()}>
+          {/* Links da esquerda */}
+          <ul className="nav-menu nav-left">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#categories">Categories</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+          
+          {/* Logo no centro */}
+          <a href="#" onClick={() => window.location.reload()} className="logo-center">
             <img src="/images/PM_Hub_transparent.png" 
               className="logo" 
               alt="PMHub"/>
           </a>
           
-          <ul className="nav-menu">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#categories">Categories</a></li>
-            <li><a href="#about">About</a></li>
+          {/* Links da direita */}
+          <ul className="nav-menu nav-right">
+            <li><a href="#testimonials">Testimonials</a></li>
             <li><a href="#contact">Contact</a></li>
             <li><a href="#profile">Profile</a></li>
           </ul>
@@ -107,6 +114,82 @@ function Home() {
             </div>
             <div className="about-image">
               <img src="/images/about-illustration.png" alt="PMHub Features" />
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Testimonials Section */}
+      <section id="testimonials" className="testimonials-section">
+        <div className="testimonials-container">
+          <h2>What Our Users Say</h2>
+          <p className="testimonials-subtitle">Join thousands of happy media enthusiasts</p>
+          <div className="testimonials-grid">
+            <div className="testimonial-card">
+              <div className="testimonial-header">
+                <img src="/images/user1.jpg" alt="Sarah Chen" className="user-avatar" />
+                <div className="user-info">
+                  <h4>Sarah Chen</h4>
+                  <div className="rating">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="rating-text">5.0</span>
+                  </div>
+                </div>
+              </div>
+              <p className="testimonial-text">
+                "PMHub transformed how I track my entertainment! I've discovered so many amazing movies 
+                and books through their recommendations. The interface is beautiful and so easy to use."
+              </p>
+              <span className="testimonial-date">2 weeks ago</span>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-header">
+                <img src="/images/user2.jpg" alt="Marcus Rodriguez" className="user-avatar" />
+                <div className="user-info">
+                  <h4>Marcus Rodriguez</h4>
+                  <div className="rating">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="rating-text">5.0</span>
+                  </div>
+                </div>
+              </div>
+              <p className="testimonial-text">
+                "Finally, one place for all my media! Love how I can track my gaming progress, 
+                rate anime series, and discover new manga. The chat groups feature is fantastic!"
+              </p>
+              <span className="testimonial-date">1 month ago</span>
+            </div>
+            <div className="testimonial-card">
+              <div className="testimonial-header">
+                <img src="/images/user3.jpg" alt="Emma Thompson" className="user-avatar" />
+                <div className="user-info">
+                  <h4>Emma Thompson</h4>
+                  <div className="rating">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="rating-text">4.8</span>
+                  </div>
+                </div>
+              </div>
+              <p className="testimonial-text">
+                "Best media tracking app I've ever used! The personalized recommendations are spot-on, 
+                and I love competing with friends. It's like having a personal entertainment assistant."
+              </p>
+              <span className="testimonial-date">3 weeks ago</span>
+            </div>
+          </div>
+          
+          <div className="testimonials-stats">
+            <div className="stat">
+              <span className="stat-number">10K+</span>
+              <span className="stat-label">Active Users</span>
+            </div>
+            <div className="stat">
+              <span className="stat-number">4.9</span>
+              <span className="stat-label">Average Rating</span>
+            </div>
+            <div className="stat">
+              <span className="stat-number">500K+</span>
+              <span className="stat-label">Media Tracked</span>
             </div>
           </div>
         </div>
