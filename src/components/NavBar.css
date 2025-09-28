@@ -1,0 +1,82 @@
+/*------------- NAVBAR -------------*/
+.NavBar {
+  background: linear-gradient(to bottom, #531b7e, #000000);
+  padding: 20px 0;
+  width: 100%;
+}
+
+.NavBar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.NavBar-menu {
+  list-style: none;
+  display: flex;
+  gap: 32px;
+}
+
+/* Animação dourada personalizada */
+@keyframes shineLogoAndBox {
+    0% { 
+        filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
+    }
+    30% { 
+        filter: drop-shadow(0 0 2px purple) 
+                drop-shadow(0 0 20px rgba(179, 33, 187, 0.8));
+    }
+    100% { 
+        filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
+    }
+}
+
+.NavBar-menu a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.NavBar-menu a:hover {
+  color: #c146c1;
+  transform: translateY(-4px) scale(1.05);
+}
+
+.NavBar-menu a::after {
+  content: '';
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #9D4EDD, #c146c1);
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+  border-radius: 2px;
+}
+
+.NavBar-menu a:hover::after {
+  width: 90%;
+}
+
+.logo {
+  width: 100px;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
+}
+
+.logo:hover{
+    animation-name: shineLogoAndBox;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1; /* Roda só uma vez */
+    transform: scale(1.05) translateY(-8px);
+}
+
