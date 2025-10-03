@@ -4,39 +4,46 @@ import './NavBar.css'
 import { useState, useEffect } from 'react'
 
 function HomePage() {
-    const heroImages=[
-        '/images/HeroSection.jpg',
-        '/images/HeroSection1.jpg',
-        '/images/HeroSection2.jpg',
-        '/images/HeroSection3.jpg',
-        '/images/HeroSection4.jpg',
-        '/images/HeroSection5.jpg',
-        '/images/HeroSection6.jpg'
-    ]
+  const heroImages = [
+    '/images/HeroSection/HeroSection1.jpg',
+    '/images/HeroSection/HeroSection.jpg',
+    '/images/HeroSection/HeroSection2.jpg',
+    '/images/HeroSection/HeroSection3.jpg',
+    '/images/HeroSection/HeroSectionOnepiece.png',
+    '/images/HeroSection/HeroSection4.jpg',
+    '/images/HeroSection/HeroSection5.jpg',
+    '/images/HeroSection/HeroSection6.jpg'
+  ]
 
-    const [currentSlide, setCurrentSlide]=useState(1)
+  const [currentSlide, setCurrentSlide] = useState(0)
 
-    useEffect(()=>{
-        const interval = setInterval(()=>{
-            setCurrentSlide((prevSlide)=>{
-                return (prevSlide+1)%heroImages.length
-            })
-        }, 3000)
-        return ()=>clearInterval(interval)
-    }, [])
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prevSlide) => {
+        return (prevSlide + 1) % heroImages.length
+      })
+    }, 3000)
+    return () => clearInterval(interval)
+  }, []) 
+
+  const testimonals = [
+    {id:1, name: "João Evaristo", avatar: "/images/Avatars/pfp1.jpeg", rating: "10⭐", title: "THE BEST!", descrição:"allllllllllllllllllllalalallalla", date: "3-10-2025"},
+    {id:2, name: "Jordão Bruno", avatar: "/images/Avatars/pfp2.jpeg", rating: "9.5⭐", title: "OMG !!!", descrição:"dididididididididid", date: "1-10-2025"},
+    {id:3, name: "Gonçalo Antão", avatar: "/images/Avatars/pfp3.jpeg", rating: "10⭐", title: "LOVE IT ❤️", descrição:"blablablablablabla", date: "3-10-2025"}
+  ]
 
   return (
     <div className="homepage">
-      <div className="hero-section">
+      <div className="hero-section" id="home">
         <div className="hero-background">
-            {heroImages.map((image, index) => (
-            <img 
-            key={index}
-            src={image} 
-            alt={`Hero ${index + 1}`}
-            className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+          {heroImages.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={`Hero ${index + 1}`}
+              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
             />
-         ))}
+          ))}
           <div className="hero-text">
             <p className="tagline">
               Personal Media Hub | For Movies, Books, Series & Games
@@ -50,12 +57,12 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="categories-section">
+      <div className="categories-section" id="categories">
         <div className="categories-section-container">
           <h2>Choose One Category</h2>
           <p>What would you like to explore today?</p>
           <div className="categories-grid">
-            <div className="categories-movies-card">
+            <div className="categories-movies-card" a>
               <h3>Movies & Series</h3>
               <p>
                 Discover and track your favorite movies, TV shows, cartoons and
@@ -83,7 +90,7 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="about-section">
+      <div className="about-section" id="about">
         <div className="about-contender">
           <div className="about-text">
             <h2>About PMHUB</h2>
@@ -101,6 +108,7 @@ function HomePage() {
               evolves with your journey.
             </p>
             <div className="about-features">
+              {/* Seus features permanecem aqui */}
               <div className="feature">
                 <span className="feature-icon">📊</span>
                 <span>Track your progress across all media types</span>
@@ -122,17 +130,39 @@ function HomePage() {
                 <span>Level up your profile and compete with others</span>
               </div>
             </div>
-            <div className="about-image">
-              <img
-                src="/images/about-illustration.png"
-                alt="PMHub Features"
-              />
-            </div>
+          </div>
+
+          {/* A imagem agora está FORA da div about-text */}
+          <div className="about-image">
+            <img
+              src="/images/about-illustration.png"
+              alt="PMHub Features"
+            />
           </div>
         </div>
       </div>
 
-      <div className="contact-section">
+      <div className="testimonals" id="testimonals">
+        <div className="testimonals-contender">
+          <h2 className="testimonals-title">What Our Say About Us</h2>
+          <p className="testimonals-subtitle"><br />Join Thousands of happy media enthusiasts</p>
+          <div className="testimonals-grid">
+            {testimonals.map((review)=>(
+              <div className="testimonals-card" key={review.id}>
+                  <img src={review.avatar} alt={review.name} className="avatar"/>
+                  <div className="review-header">
+                    <p className="user-name">{review.name}</p>
+                    <p className="user-rating">{review.rating}</p>
+                    <p className="review-meta">{review.title} · {review.date}</p>
+                  </div>
+                  <p className="review-description">{review.descrição}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="contact-section" id="contact">
         <div className="contact-contender">
           <div className="contact-text">
             <h2>Get In Touch</h2>
@@ -198,4 +228,4 @@ function HomePage() {
   )
 }
 
-export default HomePage;
+export default HomePage
