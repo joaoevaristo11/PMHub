@@ -142,6 +142,8 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  box-shadow: 0 10px 30px rgba(183, 26, 26, 1);
+
 }
 
 .category-card::before, .categories-movies-card::before {
@@ -180,6 +182,7 @@ body {
 .category-card:hover, .categories-movies-card:hover {
   transform: translateY(-10px);
   border-color: var(--border-highlight);
+  box-shadow: 0 0 15px rgba(246, 7, 181, 0.8) ;
 }
 
 .category-icon {
@@ -309,7 +312,7 @@ body {
 .testimonals-contender{
   max-width: 1200px;
   margin: 0 auto;          /* centraliza o contêiner */
-  padding: 0 20px;
+  padding: 50px 20px;
   text-align: center;  
 }
 
@@ -321,6 +324,7 @@ body {
 .testimonals-subtitle{
   font-size: 20px;
   color: #9D4EDD;
+  margin-bottom: 3rem;
 }
 
 .testimonals-grid{
@@ -330,11 +334,89 @@ body {
   gap: 40px;
 }
 
-.testimonals-card .avatar{
+.testimonals-card .avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 15px rgba(138, 43, 226, 0.6);
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+  border: 0.1px solid black;
 }
+
+/* Animação no hover */
+.testimonals-card .avatar:hover {
+  transform: translateY(-15px) scale(1.2);
+  box-shadow: 0 15px 25px rgba(0,0,0,0.5), 0 0 25px rgba(138, 43, 226, 0.8);
+}
+
+.testimonals-card{
+  padding: 40px 30px;
+  border-radius: 16px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  border: 1px solid #333;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(251, 6, 231, 1);
+  background: linear-gradient(to bottom right, rgba(27, 2, 44, 0.8), rgba(181, 180, 181, 0.8));
+}
+
+.testimonals-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(244, 107, 233, 1);
+
+   
+}
+
+.testimonals-card .review-header .user-name{
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.testimonals-card .review-header .user-rating{
+  font-size: 1rem;
+  color:#FFD700; /* dourado para a estrela */
+  margin-bottom: 1rem;
+}
+
+
+.testimonals-card .review-header .review-meta{
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: black;  
+}
+
+.testimonals-card .review-description{
+  font-size: 1rem;
+  color: #eee;
+  line-height: 1.4;
+}
+
+.see-all-reviews {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.see-all-reviews button {
+  background: linear-gradient(135deg, #da0cf9ff, #370d4dff);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.see-all-reviews button:hover {
+  transform: scale(1.2);
+  box-shadow: 0px 4px 12px rgba(254, 15, 178, 0.25);
+}
+
+
 
 
 
