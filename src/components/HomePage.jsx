@@ -35,6 +35,9 @@ function HomePage() {
 
   return (
     <div className="homepage">
+      <div className="background">
+
+      </div>
       <div className="hero-container">
   <div className="hero-content">
     <div className="logo">
@@ -42,8 +45,9 @@ function HomePage() {
       <h2 className="logo-text">PMHub</h2>
     </div>
     <div className="text-sci">
-      <h2>Welcome! <br/><span>To PMHub</span> </h2>
-      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Explicabo, dolorem.</p>
+      <h2>Welcome to <br/><span>Your Hub of Reviews</span> </h2>
+      <p>Discover honest ratings on movies, series, books, and video-games.</p>
+      <p>Share your opinion, explore what others think, and never miss a great story.</p>
     </div>
   </div>
   <div className="hero-logreg-box">
@@ -62,13 +66,13 @@ function HomePage() {
         </div>
       <div className="remember-forgot">
         <label>
-          <input type="checkbox" />Remember me
+          <input type="checkbox"/>Remember me
         </label>
         <a href="#">Forgot password?</a>
       </div>
 
       <button type="submit" className="btn">Sign In</button>
-      <div className="login-register"><p>Don't have an account?<a href="#" className="register-link">Sign up</a></p></div>
+      <div className="login-register"><p>Don't have an account?<a href="#" className="register-link"> Sign up</a></p></div>
       </form>
     </div>
   </div>
