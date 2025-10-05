@@ -1,82 +1,77 @@
-/*------------- NAVBAR -------------*/
-.NavBar {
-  background: linear-gradient(to bottom, #531b7e, #000000);
-  padding: 20px 0;
-  width: 100%;
-}
-
 .NavBar-container {
+  position: fixed;
+  top: 0;
+  left: 0; 
+  width: 100%;
+  padding: 25px 12.5%;
+  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 5%;
+  z-index: 100;
 }
 
 .NavBar-menu {
-  list-style: none;
   display: flex;
-  gap: 32px;
+  list-style: none;
+  gap: 30px;
 }
 
-/* Animação dourada personalizada */
-@keyframes shineLogoAndBox {
-    0% { 
-        filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
-    }
-    30% { 
-        filter: drop-shadow(0 0 2px purple) 
-                drop-shadow(0 0 20px rgba(179, 33, 187, 0.8));
-    }
-    100% { 
-        filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
-    }
-}
-
-.NavBar-menu a {
+.NavBar-menu li a {
+  font-size: 16px;
+  color: white;
   text-decoration: none;
-  color: #fff;
-  font-size: 18px;
-  padding: 8px 16px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  font-weight: 500;
   position: relative;
 }
 
-.NavBar-menu a:hover {
-  color: #c146c1;
-  transform: translateY(-4px) scale(1.05);
-}
-
-.NavBar-menu a::after {
+.NavBar-menu li a::after {
   content: '';
-  width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #9D4EDD, #c146c1);
   position: absolute;
-  left: 50%;
+  left: 0;
   bottom: -6px;
-  transform: translateX(-50%);
-  transition: width 0.4s ease;
-  border-radius: 2px;
+  width: 100%;
+  height: 2px;
+  background: white;
+  border-radius: 5px;
+  transform: translateY(10px);
+  opacity: 0;
+  transition: 0.5s;
 }
 
-.NavBar-menu a:hover::after {
-  width: 90%;
+.NavBar-menu li a:hover::after{
+  transform: translateY(0);
+  opacity: 1;
 }
 
-.logo {
-  width: 100px;
-  transition: all 0.2s ease;
-  filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.3));
+.search-bar{
+  width: 250px;
+  height: 45px;
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
 }
 
-.logo:hover{
-    animation-name: shineLogoAndBox;
-    animation-duration: 4s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: 1; /* Roda só uma vez */
-    transform: scale(1.05) translateY(-8px);
+.search-bar input{
+  margin-left: 12px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: white;
+}
+
+.search-btn{
+  width: 40px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: white;
 }
 
