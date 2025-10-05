@@ -35,28 +35,66 @@ function HomePage() {
 
   return (
     <div className="homepage">
-      <div className="hero-section" id="home">
-        <div className="hero-background">
-          {heroImages.map((image, index) => (
-            <img
-              key={index}
-              src={image}
-              alt={`Hero ${index + 1}`}
-              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
-            />
-          ))}
-          <div className="hero-text">
-            <p className="tagline">
-              Personal Media Hub | For Movies, Books, Series & Games
-            </p>
-            <h1>
-              Welcome to <span>PMHub</span>
-              <br />
-              Your Personal Media Shelf
-            </h1>
-          </div>
+      <div className="hero-container">
+  <div className="hero-content">
+    <div className="logo">
+      <img src="/images/logo.png" alt="logo" className="logo-img" />
+      <h2 className="logo-text">PMHub</h2>
+    </div>
+    <div className="text-sci">
+      <h2>Welcome! <br/><span>To PMHub</span> </h2>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Explicabo, dolorem.</p>
+    </div>
+  </div>
+  <div className="hero-logreg-box">
+    <div className="form-box login">
+      <form action="#">
+        <h2>Sign In</h2>
+        <div className="input-box">
+          <span className="icon"><img src="/images/envelope.png" alt="envelope" /></span>
+          <input type="email" required/>
+          <label>Email</label>
         </div>
+        <div className="input-box">
+          <span className="icon"><img src="/images/key.png" alt="key" /></span>
+          <input type="password" required/>
+          <label>Password</label>
+        </div>
+      <div className="remember-forgot">
+        <label>
+          <input type="checkbox" />Remember me
+        </label>
+        <a href="#">Forgot password?</a>
       </div>
+
+      <button type="submit" className="btn">Sign In</button>
+      <div className="login-register"><p>Don't have an account?<a href="#" className="register-link">Sign up</a></p></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div className="social-icons">
+  <ul>
+    <li style={{ "--i": "#64c1f3ff", "--j": "#04739cff" }}>
+      <span className="icon"><ion-icon name="logo-linkedin"></ion-icon></span>
+      <span className="title">LinkedIn</span>
+    </li>
+    <li style={{ "--i": "#fc0d5cff", "--j": "#f55809ff" }}>
+      <span className="icon"><ion-icon name="logo-instagram"></ion-icon></span>
+      <span className="title">Instagram</span>
+    </li>
+    <li style={{ "--i": "#282929ff", "--j": "#090909ff" }}>
+      <span className="social-icon"><img src="/images/twitter.png" alt="" /></span>
+      <span className="title">Twitter</span>
+    </li>
+    <li style={{ "--i": "#012d65ff", "--j": "#42A5F5" }}>
+      <span className="icon"><ion-icon name="logo-facebook"></ion-icon></span>
+      <span className="title">Facebook</span>
+    </li>
+  </ul>
+</div>
+
 
       <div className="categories-section" id="categories">
         <div className="categories-section-container">

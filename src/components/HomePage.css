@@ -22,71 +22,274 @@ body {
 }
 
 /*------------- HERO SECTION -------------*/
-.hero-section {
-  width: 100%;
-  height: 80vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-background {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.hero-background img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 2s ease-in-out;
-  z-index: 1;
-}
-
-.hero-slide.active {
-  opacity: 1;
-}
-
-.hero-text {
+.hero-container {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%,-50%);
+  background: url('/images/HeroSection/HeroSection.jpg') no-repeat;
+  width: 75%;
+  height: 550px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.hero-container .hero-content{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width:58%;
+  height: 100%;
+  background: transparent;
+  padding: 80px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.logo{
+  display: flex;
+  align-items: center; /* centra verticalmente */
+}
+
+.logo-img {
+  width: 60px;  /* ajusta tamanho da imagem */
+  height: auto;
+}
+
+.logo-text {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+
+.hero-container .hero-logreg-box{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width:42%; 
+  height: 100%;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  color: white;
+}
+
+.hero-container .hero-logreg-box .form-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-container .hero-logreg-box .form-box h2{
+  font-size: 32px;
   text-align: center;
+}
+
+.hero-container .hero-logreg-box .form-box .input-box{
+  position: relative;
+  width: 340px;
+  height: 50px;
+  border-bottom: 2px solid white;
+  margin: 30px 0;
+}
+
+.hero-container .hero-logreg-box .form-box .input-box input{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 5px;
+  margin-top: 10px;
+  padding-right: 30px;
+}
+
+.hero-container .hero-logreg-box .form-box .input-box label{
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: top 0.5s ease, font-size 0.5s ease, color 0.5s ease;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hero-container .hero-logreg-box .form-box .input-box input:focus~label,
+.hero-container .hero-logreg-box .form-box .input-box input:valid~label{
+  top: -5px;
+  transform: translateY(0);
+}
+
+
+.text-sci h2{
+  font-size:40px;
+}
+
+.text-sci h2 span{
+  font-size: 25px;
+}
+
+.text-sci p{
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+.social-icons{ 
+  position: absolute;
+  top: 600px; /* ajuste conforme necessário */
+  left: 26%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+/* lista */
+.social-icons ul {
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+
+/* cada botão */
+.social-icons ul li {
+  position: relative;
+  list-style: none;
+  width: 45px;
+  height: 45px;
+  background: transparent;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15);
+  border-radius: 60px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: width 0.45s cubic-bezier(.2,.8,.2,1);
+  overflow: hidden; 
+}
+
+/* gradiente que aparece por cima do fundo (mas por baixo do texto) */
+.social-icons ul li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 60px;            /* mesma radius do li */
+  background: linear-gradient(45deg, var(--i), var(--j));
+  opacity: 0;
+  transition: opacity 0.45s;
+  z-index: 0;                     /* por baixo do conteúdo (ícone/título) */
+}
+
+/* brilho desfocado por trás */
+.social-icons ul li::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 60px;
+  background: linear-gradient(45deg, var(--i), var(--j));
+  filter: blur(15px);
+  transition: opacity 0.45s;
+  opacity: 0;
+  z-index: -1;
+}
+
+/* hover: alarga para pill e mostra o gradiente */
+.social-icons ul li:hover {
+  width: 180px; /* ajusta se quiseres maior/menor */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* ativa o gradiente e o glow no hover */
+.social-icons ul li:hover::before { opacity: 1; }
+.social-icons ul li:hover::after { opacity: 0.45; }
+
+/* conteúdo (ícone + título) acima do gradiente */
+.social-icons ul li .icon,
+.social-icons ul li .title {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* ícone */
+.social-icons ul li .icon ion-icon {
+  color: #f5f1f1ff;
+  font-size: 1.4em;
+  transition: transform 0.35s, color 0.2s;
+  transition-delay: 0.1s;
+}
+
+/* esconde o ícone ao fazer hover (dá lugar ao texto) */
+.social-icons ul li:hover .icon ion-icon {
+  transform: scale(0);
   color: #fff;
-  z-index: 2; /* Por cima das imagens */
+  transition-delay: 0s;
 }
 
-.hero-text .tagline {
-  font-size: 20px;
-  color: #c7b3b3ff;
-  margin-bottom: 20px;
+/* título — aparece em cima, centrado */
+.social-icons ul li .title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform 0.5s;
 }
 
-.hero-text h1 {
-  font-size: 48px;
-  line-height: 1.3;
-  margin-bottom: 20px;
+/* ícones (ionicons OU imagens) */
+.social-icons ul li .social-icon img {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s, filter 0.3s;
+  filter: invert(1) brightness(1);
+
 }
 
-.hero-text h1 span {
-  background: linear-gradient(to right, #9D4EDD, #c146c1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* quando faz hover (ícone some → texto aparece) */
+.social-icons ul li:hover .social-icon img {
+  transform: scale(0);
+  filter: brightness(1) invert(1); /* branco no hover, igual aos ionicons */
+  transition-delay: 0s;
 }
+
+.social-icons ul li:hover .title {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.input-box .icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+}
+
+.input-box .icon img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
 
 /*------------- CATEGORIES SECTION -------------*/
 :root {
@@ -103,6 +306,8 @@ body {
 .categories-section {
   background: var(--bg-gradient);
   padding: 80px 0;
+  margin-top: 100vh; /* igual à altura do hero */
+
 }
 
 .categories-section-container {
