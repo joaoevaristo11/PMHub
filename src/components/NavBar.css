@@ -9,6 +9,31 @@
   justify-content: space-between;
   align-items: center;
   z-index: 100;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, background 0.3s ease-in-out;
+}
+
+/* Quando está no topo - sem blur */
+.NavBar.at-top .NavBar-container {
+  backdrop-filter: none;
+  background: transparent;
+}
+
+/* Quando fez scroll - com blur */
+.NavBar.scrolled .NavBar-container {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Classe para navbar visível */
+.NavBar.visible .NavBar-container {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Classe para navbar escondida */
+.NavBar.hidden .NavBar-container {
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
 .NavBar-menu {
@@ -74,4 +99,3 @@
   cursor: pointer;
   color: white;
 }
-

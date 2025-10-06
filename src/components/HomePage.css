@@ -90,6 +90,7 @@ body {
 }
 
 .hero-container .hero-logreg-box .form-box{
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -354,6 +355,51 @@ body {
   filter: brightness(0) invert(1);
 }
 
+.hero-container .hero-logreg-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 42%; 
+  height: 100%;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  color: white;
+  overflow: hidden; /* Importante para esconder os formulários que saem da área */
+}
+
+.form-box {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.32s ease-in-out, opacity 0.2s ease-in-out;
+  flex-direction: column;
+}
+
+.form-box.login {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.form-box.register {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* Quando o register está ativo */
+.hero-logreg-box.active .form-box.login {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.hero-logreg-box.active .form-box.register {
+  transform: translateX(0);
+  opacity: 1;
+}
 
 /*------------- CATEGORIES SECTION -------------*/
 :root {
@@ -370,8 +416,6 @@ body {
 .categories-section {
   background: var(--bg-gradient);
   padding: 80px 0;
-  margin-top: 100vh; /* igual à altura do hero */
-
 }
 
 .categories-section-container {
