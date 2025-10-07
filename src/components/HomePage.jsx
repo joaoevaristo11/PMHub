@@ -7,16 +7,18 @@ import { useState, useEffect } from 'react'
 function HomePage() {
   const heroImages = [
     '/images/HeroSection/HeroSection1.jpg',
-    '/images/HeroSection/HeroSection.jpg',
+    '/images/HeroSection/HeroSectionST.jpg',
     '/images/HeroSection/HeroSection2.jpg',
     '/images/HeroSection/HeroSection3.jpg',
     '/images/HeroSection/HeroSectionOnepiece.png',
     '/images/HeroSection/HeroSection4.jpg',
+    '/images/HeroSection/HeroSectionSpiderMan.jpg',
     '/images/HeroSection/HeroSection5.jpg',
-    '/images/HeroSection/HeroSection6.jpg'
+    '/images/HeroSection/HeroSection6.jpg',
+    '/images/HeroSection/SquidGame.jpg'
   ]
 
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(4)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,9 +35,8 @@ function HomePage() {
     {id:3, name: "Gonçalo Antão", avatar: "/images/Avatars/pfp3.jpeg", rating: "⭐⭐⭐⭐⭐", title: "LOVE IT ❤️", descrição:"blablablablablabla"}
   ]
 
-    const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
 
-  // ... resto do código existente ...
 
   const handleSignUpClick = () => {
     setIsRegister(true);
@@ -47,20 +48,40 @@ function HomePage() {
 
   return (
     <div className="homepage">
-      <div className="background"></div>
-      <div className="hero-container">
-        <div className="hero-content">
-          <div className="logo">
-            <img src="/images/logo.png" alt="logo" className="logo-img" />
-            <h2 className="logo-text">PMHub</h2>
-          </div>
-          <div className="text-sci">
-            <h2>Welcome to <br/><span>Your Hub of Reviews</span> </h2>
-            <p>Discover honest ratings on movies, series, books, and video-games.</p>
-            <p>Share your opinion, explore what others think, and never miss a great story.</p>
-          </div>
+          <div className="background">
+      {/* Carrossel de fundo */}
+      {heroImages.map((image, index) => (
+        <img
+          key={index}
+          src={image}
+          alt={`Hero Background ${index + 1}`}
+          className={`background-slide ${index === currentSlide ? 'active' : ''}`}
+        />
+      ))}
+    </div>
+    
+    <div className="hero-container">
+      {/* Carrossel do container principal */}
+      {heroImages.map((image, index) => (
+        <div
+          key={index}
+          className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+          style={{ backgroundImage: `url(${image})` }}
+        />
+      ))}
+      
+      <div className="hero-content">
+        <div className="logo">
+          <img src="/images/logo.png" alt="logo" className="logo-img" />
+          <h2 className="logo-text">PMHub</h2>
         </div>
-        
+        <div className="text-sci">
+          <h2>Welcome to <br/><span>Your Hub of Reviews</span> </h2>
+          <p>Discover honest ratings on movies, series, books, and video-games.</p>
+          <p>Share your opinion, explore what others think, and never miss a great story.</p>
+        </div>
+      </div>
+
         <div className={`hero-logreg-box ${isRegister ? 'active' : ''}`}>
           <div className="form-box login">
             <form action="#">
