@@ -1,0 +1,120 @@
+.contact-section {
+  background: linear-gradient(to bottom, #621370ff, #0d0517);
+  padding: 80px 0;
+}
+
+.contact-contender {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.contact-text h2 {
+  font-size: 42px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.contact-subtittle {
+  font-size: 20px;
+  color: #9D4EDD;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.contact-description {
+  font-size: 16px;
+  color: #CCCCCC;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(157, 78, 221, 0.1);
+  border-radius: 12px;
+  border-left: 4px solid #9D4EDD;
+}
+
+.contact-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.contact-icon img {
+  width: 30px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.contact-item h4 {
+  color: #fff;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.contact-item p {
+  color: #AAAAAA;
+  font-size: 14px;
+}
+
+.contact-form {
+  background: rgba(26, 15, 46, 0.8);
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid #333;
+}
+
+.form-sec {
+  margin-bottom: 24px;
+}
+
+.form-sec input,
+.form-sec textarea {
+  width: 100%;
+  padding: 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-sec input:focus,
+.form-sec textarea:focus {
+  outline: none;
+  border-color: #9D4EDD;
+}
+
+.contact-button {
+  width: 100%;
+  background: linear-gradient(135deg, #8d36d4, #c146c1);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-button:hover {
+  background: linear-gradient(135deg, #7312a7, #9D4EDD);
+  transform: translateY(-2px);
+}
