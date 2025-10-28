@@ -273,3 +273,28 @@
   to { opacity: 0; transform: translateY(-10px); }
 }
 
+.logout-btn {
+  width: auto !important;   /* impede que a .btn defina 100% */
+  margin-top: 20px;
+  align-self: center;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 30px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+}
+
+.logout-btn:hover {
+  transform: scale(1.06);
+  background: linear-gradient(135deg, #9f14eaff, #ff0c0cff);
+  box-shadow: 0 0 15px rgba(251, 5, 5, 0.5);
+}
+
+
+
+

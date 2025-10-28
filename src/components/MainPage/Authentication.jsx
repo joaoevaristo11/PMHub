@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Authentication.css";
 
 function Authentication() {
@@ -7,9 +7,19 @@ function Authentication() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [loginError, setLoginError] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "" });
+
+  // ✅ verificar se há um utilizador guardado
+  useEffect(() => {
+    const savedUser = localStorage.getItem("RememberedUser");
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      setLoggedInUser(parsed);
+    }
+  }, []);
 
   const handleSignUpClick = () => setIsRegister(true);
   const handleSignInClick = () => setIsRegister(false);
@@ -53,6 +63,7 @@ function Authentication() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+
     const res = await fetch("http://localhost:5000/users");
     const data = await res.json();
 
@@ -61,15 +72,29 @@ function Authentication() {
     );
 
     if (user) {
-      localStorage.setItem("LoggedUser", JSON.stringify(user));
       setLoggedInUser(user);
       showToast(`Welcome back, ${user.name}!`, "success");
+
+      // ✅ Guardar se o utilizador marcou "Remember me"
+      if (rememberMe) {
+        localStorage.setItem("RememberedUser", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("RememberedUser");
+      }
     } else {
       setLoginError(true);
       setTimeout(() => setLoginError(false), 600);
       showToast("Account not found — please sign up.", "error");
       setIsRegister(true);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("RememberedUser");
+    setLoggedInUser(null);
+    setEmail("");
+    setPassword("");
+    showToast("You have logged out.", "info");
   };
 
   if (loggedInUser) {
@@ -79,6 +104,9 @@ function Authentication() {
           Welcome back, <span>{loggedInUser.name}!</span>
         </h2>
         <p>We're happy to see you again on PMHub 💫</p>
+        <button className="btn logout-btn" onClick={handleLogout}>
+          Log Out
+        </button>
       </div>
     );
   }
@@ -121,7 +149,12 @@ function Authentication() {
 
           <div className="remember-forgot">
             <label>
-              <input type="checkbox" /> Remember me
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />{" "}
+              Remember me
             </label>
             <a href="#">Forgot password?</a>
           </div>
