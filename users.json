@@ -1,0 +1,70 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "João Evaristo",
+      "email": "joao@mail.com",
+      "password": "1234"
+    },
+    {
+      "id": "2417",
+      "name": "João Evaristo",
+      "email": "evaristojoao11@gmail.com",
+      "password": "Joaoeva2005"
+    },
+    {
+      "id": "ee3e",
+      "name": "Marcio",
+      "email": "marcio@gmail.com",
+      "password": "lalala"
+    },
+    {
+      "id": "1af0",
+      "name": "DickinSOn",
+      "email": "dickinson@hotmail.com",
+      "password": "dickinson123"
+    },
+    {
+      "id": "f234",
+      "name": "Gonçalo Antão",
+      "email": "goncalo.antao24@gmail.com",
+      "password": "goncas24"
+    },
+    {
+      "id": "a793",
+      "name": "Rodrigo Dias",
+      "email": "rodrigay@gmail.com",
+      "password": "babygirl123"
+    },
+    {
+      "id": "c410",
+      "name": "João Evaristo",
+      "email": "joao@gmail.com",
+      "password": "joao2005"
+    },
+    {
+      "id": "1c68",
+      "name": "Pila",
+      "email": "pila@gmail.com",
+      "password": "pila123"
+    },
+    {
+      "id": "84f5",
+      "name": "aaa",
+      "email": "aaaa@gmail.com",
+      "password": "818188118aaa"
+    },
+    {
+      "id": "f819",
+      "name": "aaaaaaaaa",
+      "email": "bbbb@gmail.com",
+      "password": "aaaa"
+    },
+    {
+      "id": "348d",
+      "name": "kakakakak",
+      "email": "kakakakaka@gmail.com",
+      "password": "kakaka123"
+    }
+  ]
+}
