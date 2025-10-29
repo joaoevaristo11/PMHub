@@ -217,7 +217,7 @@ body {
 
 /* ícone */
 .social-icons ul li .icon ion-icon {
-  color: #f5f1f1ff;
+  color: #fd08fdff;
   font-size: 1.4em;
   transition: transform 0.35s, color 0.2s;
   transition-delay: 0.1s;
@@ -245,20 +245,21 @@ body {
 }
 
 /* ícones (ionicons OU imagens) */
+/* imagens (para o X) */
 .social-icons ul li .social-icon img {
   width: 22px;
   height: 22px;
   transition: transform 0.2s, filter 0.3s;
-  filter: invert(1) brightness(1);
-
+  filter: invert(36%) sepia(92%) saturate(7488%) hue-rotate(300deg) brightness(104%) contrast(108%);
 }
 
-/* quando faz hover (ícone some → texto aparece) */
+/* ao fazer hover (some e dá lugar ao texto, igual aos icons normais) */
 .social-icons ul li:hover .social-icon img {
   transform: scale(0);
-  filter: brightness(1) invert(1); /* branco no hover, igual aos ionicons */
+  filter: brightness(1) invert(1);
   transition-delay: 0s;
 }
+
 
 .social-icons ul li:hover .title {
   transform: translate(-50%, -50%) scale(1);
@@ -269,7 +270,7 @@ body {
   width: 100%;
   text-align: center;
   padding: 25px 0;
-  background: #080808;
+  background: linear-gradient(to bottom right, #0d0517, rgba(21, 1, 1, 0.8));
   font-weight: 300;
-  border-top: 1px solid #333;
+  border-top: 1px solid #010101ff;
 }

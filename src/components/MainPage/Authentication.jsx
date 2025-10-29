@@ -1,102 +1,117 @@
 import { useState, useEffect } from "react";
 import "./Authentication.css";
 
+const API_URL = "http://localhost:5000/api/auth";
+
 function Authentication() {
   const [isRegister, setIsRegister] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [agreed, setAgreed] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [loginError, setLoginError] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "" });
 
-  // ✅ verificar se há um utilizador guardado
+  // ✅ Verificar se há user/token guardado
   useEffect(() => {
-    const savedUser = localStorage.getItem("RememberedUser");
-    if (savedUser) {
-      const parsed = JSON.parse(savedUser);
-      setLoggedInUser(parsed);
-    }
+    const token = localStorage.getItem("token");
+    if (token) fetchProfile(token);
   }, []);
 
-  const handleSignUpClick = () => setIsRegister(true);
-  const handleSignInClick = () => setIsRegister(false);
-
+  // ✅ Mostrar notificações visuais
   const showToast = (message, type = "info") => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 3000);
   };
 
+  // ✅ Buscar perfil do user autenticado
+  const fetchProfile = async (token) => {
+    try {
+      const res = await fetch(`${API_URL}/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Invalid token");
+      const data = await res.json();
+      setLoggedInUser(data.user);
+    } catch (err) {
+      localStorage.removeItem("token");
+    }
+  };
+
+  // ✅ Atualizar campos dinamicamente
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // ✅ Criar conta
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    if (!agreed) {
-      showToast("Please agree to the terms & conditions.", "error");
-      return;
+    if (!agreed) return showToast("Please agree to the terms & conditions.", "error");
+    if (form.password.length < 6) return showToast("Password must have at least 6 characters.", "error");
+
+    try {
+      const res = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return showToast(data.message || "Registration failed.", "error");
+
+      showToast("Account created successfully!", "success");
+      setForm({ name: "", email: "", password: "" });
+      setAgreed(false);
+      setIsRegister(false);
+    } catch (err) {
+      showToast("Server error — please try again later.", "error");
     }
-
-    const res = await fetch("http://localhost:5000/users");
-    const data = await res.json();
-    const userExist = data.find((u) => u.email === email);
-
-    if (userExist) {
-      showToast("Email already registered.", "error");
-      return;
-    }
-
-    const newUser = { name, email, password };
-    await fetch("http://localhost:5000/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newUser),
-    });
-
-    showToast("Account created successfully!", "success");
-    setName("");
-    setEmail("");
-    setPassword("");
-    setAgreed(false);
-    setIsRegister(false);
   };
 
+  // ✅ Login com JWT
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:5000/users");
-    const data = await res.json();
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
 
-    const user = data.find(
-      (u) => u.email === email && u.password === password
-    );
+      const data = await res.json();
 
-    if (user) {
+      if (!res.ok) {
+        setLoginError(true);
+        setTimeout(() => setLoginError(false), 600);
+        showToast(data.message || "Invalid credentials.", "error");
+        return;
+      }
+
+      const { token, user } = data;
       setLoggedInUser(user);
       showToast(`Welcome back, ${user.name}!`, "success");
 
-      // ✅ Guardar se o utilizador marcou "Remember me"
-      if (rememberMe) {
-        localStorage.setItem("RememberedUser", JSON.stringify(user));
-      } else {
-        localStorage.removeItem("RememberedUser");
-      }
-    } else {
-      setLoginError(true);
-      setTimeout(() => setLoginError(false), 600);
-      showToast("Account not found — please sign up.", "error");
-      setIsRegister(true);
+      localStorage.setItem("token", token);
+      if (rememberMe) localStorage.setItem("RememberedUser", JSON.stringify(user));
+    } catch (err) {
+      showToast("Connection error. Check your server.", "error");
     }
   };
 
+  // ✅ Logout
   const handleLogout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("RememberedUser");
     setLoggedInUser(null);
-    setEmail("");
-    setPassword("");
+    setForm({ name: "", email: "", password: "" });
     showToast("You have logged out.", "info");
   };
 
+  // ✅ Boas-vindas após login
   if (loggedInUser) {
     return (
       <div className="welcome-message">
@@ -114,62 +129,35 @@ function Authentication() {
   return (
     <div className={`hero-logreg-box ${isRegister ? "active" : ""}`}>
       {/* ---------- Sign In ---------- */}
-      <div
-        key={loginError ? "shake" : "normal"}
-        className={`form-box login ${loginError ? "shake" : ""}`}
-      >
-        <form>
+      <div className={`form-box login ${loginError ? "shake" : ""}`}>
+        <form onSubmit={handleSignIn}>
           <h2>Sign In</h2>
 
           <div className="input-box">
-            <span className="icon">
-              <img src="/images/envelope.png" alt="envelope" />
-            </span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <span className="icon"><img src="/images/envelope.png" alt="email" /></span>
+            <input type="email" name="email" value={form.email} onChange={handleChange} required />
             <label>Email</label>
           </div>
 
           <div className="input-box">
-            <span className="icon">
-              <img src="/images/key.png" alt="key" />
-            </span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <span className="icon"><img src="/images/key.png" alt="key" /></span>
+            <input type="password" name="password" value={form.password} onChange={handleChange} required />
             <label>Password</label>
           </div>
 
           <div className="remember-forgot">
             <label>
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />{" "}
+              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />{" "}
               Remember me
             </label>
             <a href="#">Forgot password?</a>
           </div>
 
-          <button type="submit" className="btn" onClick={handleSignIn}>
-            Sign In
-          </button>
+          <button type="submit" className="btn small-btn">Sign In</button>
 
           <div className="login-register">
-            <p>
-              Don't have an account?
-              <a href="#" className="register-link" onClick={handleSignUpClick}>
-                {" "}
-                Sign up
-              </a>
+            <p>Don’t have an account?
+              <a href="#" onClick={() => setIsRegister(true)}> Sign up</a>
             </p>
           </div>
         </form>
@@ -177,79 +165,46 @@ function Authentication() {
 
       {/* ---------- Sign Up ---------- */}
       <div className="form-box register">
-        <form>
+        <form onSubmit={handleSignup}>
           <h2>Sign Up</h2>
 
           <div className="input-box">
-            <span className="icon">
-              <img src="/images/Sample_User_Icon.png" alt="user" />
-            </span>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+            <span className="icon"><img src="/images/Sample_User_Icon.png" alt="user" /></span>
+            <input type="text" name="name" value={form.name} onChange={handleChange} required />
             <label>Name</label>
           </div>
 
           <div className="input-box">
-            <span className="icon">
-              <img src="/images/envelope.png" alt="envelope" />
-            </span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <span className="icon"><img src="/images/envelope.png" alt="email" /></span>
+            <input type="email" name="email" value={form.email} onChange={handleChange} required />
             <label>Email</label>
           </div>
 
           <div className="input-box">
-            <span className="icon">
-              <img src="/images/key.png" alt="key" />
-            </span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <span className="icon"><img src="/images/key.png" alt="key" /></span>
+            <input type="password" name="password" value={form.password} onChange={handleChange} required />
             <label>Password</label>
           </div>
 
           <div className="remember-forgot">
             <label>
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-              />{" "}
+              <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />{" "}
               I agree to the terms & conditions
             </label>
           </div>
 
-          <button type="submit" className="btn" onClick={handleSignup}>
-            Sign Up
-          </button>
+          <button type="submit" className="btn small-btn">Sign Up</button>
 
           <div className="login-register">
-            <p>
-              Already have an account?
-              <a href="#" className="register-link" onClick={handleSignInClick}>
-                {" "}
-                Sign In
-              </a>
+            <p>Already have an account?
+              <a href="#" onClick={() => setIsRegister(false)}> Sign In</a>
             </p>
           </div>
         </form>
       </div>
 
-      {/* ---------- Toast global ---------- */}
-      {toast.message && (
-        <div className={`toast ${toast.type}`}>{toast.message}</div>
-      )}
+      {/* ---------- Toast ---------- */}
+      {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
     </div>
   );
 }
