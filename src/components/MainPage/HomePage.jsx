@@ -48,7 +48,8 @@ function HomePage() {
       </div>
 
       {/* Hero principal */}
-      <div className="hero-container">
+      <div id="home" style={{ position: "absolute", top: 0 }}></div>
+      <div className="hero-container" id="home">
         {heroImages.map((image, index) => (
           <div
             key={index}
