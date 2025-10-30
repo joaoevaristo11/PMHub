@@ -11,6 +11,8 @@ function Authentication() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [loginError, setLoginError] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "" });
+  const [showPassword, setShowPassword] = useState(false);
+
 
   // ✅ Verificar se há user/token guardado
   useEffect(() => {
@@ -91,9 +93,13 @@ function Authentication() {
         return;
       }
 
-      const { token, user } = data;
-      setLoggedInUser(user);
-      showToast(`Welcome back, ${user.name}!`, "success");
+      const { token, user, firstLogin } = data;
+      setLoggedInUser({ ...user, firstLogin });
+      if (data.firstLogin) {
+        showToast(`Welcome, ${data.user.name}! Your account is now active 🎉`, "success");
+      } else {
+        showToast(`Welcome back, ${data.user.name}!`, "success");
+      }
 
       localStorage.setItem("token", token);
       if (rememberMe) localStorage.setItem("RememberedUser", JSON.stringify(user));
@@ -111,19 +117,21 @@ function Authentication() {
     showToast("You have logged out.", "info");
   };
 
-  // ✅ Boas-vindas após login
   if (loggedInUser) {
     return (
       <div className="welcome-message">
         <h2>
-          Welcome back, <span>{loggedInUser.name}!</span>
+          {loggedInUser.firstLogin ? (
+            <>Welcome, <span>{loggedInUser.name}</span>!</>) : (<>Welcome back, <span>{loggedInUser.name}</span>!</>
+          )}
         </h2>
-        <p>We're happy to see you again on PMHub 💫</p>
+        <p>
+          {loggedInUser.firstLogin ? "Your account is ready — explore PMHub 🎉" : "We're happy to see you again on PMHub 💫"}</p>
         <button className="btn logout-btn" onClick={handleLogout}>
           Log Out
         </button>
       </div>
-    );
+    );  
   }
 
   return (
@@ -140,8 +148,20 @@ function Authentication() {
           </div>
 
           <div className="input-box">
-            <span className="icon"><img src="/images/key.png" alt="key" /></span>
-            <input type="password" name="password" value={form.password} onChange={handleChange} required />
+            <span className="icon" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+              <img
+                src={showPassword ? "/images/cadeado-aberto.png" : "/images/cadeado.png"}
+                alt="toggle password visibility"
+                title={showPassword ? "Hide password" : "Show password"}
+              />
+            </span>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
             <label>Password</label>
           </div>
 
@@ -156,7 +176,7 @@ function Authentication() {
           <button type="submit" className="btn small-btn">Sign In</button>
 
           <div className="login-register">
-            <p>Don’t have an account?
+            <p>Don't have an account?
               <a href="#" onClick={() => setIsRegister(true)}> Sign up</a>
             </p>
           </div>
@@ -181,8 +201,20 @@ function Authentication() {
           </div>
 
           <div className="input-box">
-            <span className="icon"><img src="/images/key.png" alt="key" /></span>
-            <input type="password" name="password" value={form.password} onChange={handleChange} required />
+            <span className="icon" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+              <img
+                src={showPassword ? "/images/cadeado-aberto.png" : "/images/cadeado.png"}
+                alt="toggle password visibility"
+                title={showPassword ? "Hide password" : "Show password"}
+              />
+            </span>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
             <label>Password</label>
           </div>
 
