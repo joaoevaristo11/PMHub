@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import ExcelJS from "exceljs";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
@@ -23,3 +24,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
   console.log(`🚀 Servidor a correr em http://localhost:${PORT}`)
 );
+
+

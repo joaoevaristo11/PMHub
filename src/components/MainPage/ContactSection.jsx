@@ -15,14 +15,17 @@ function ContactSection(){
 
             <div className="contact-info">
               <div className="contact-item">
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=joao.evaristo.work@gmail.com"   target="_blank" rel="noopener noreferrer">
                 <span className="contact-icon">📧</span>
                 <div>
                   <h4>Email</h4>
-                  <p>contact@pmhub.com</p>
+                  <p>joao.evaristo.work@gmail.com</p>
                 </div>
+                </a>
               </div>
 
               <div className="contact-item">
+                <a href="https://github.com/joaoevaristo11/PMHub" target="_blank" rel="noopener noreferrer">
                 <span className="contact-icon">
                   <img src="/images/Contacts/discord_clyde.png" alt="Discord" />
                 </span>
@@ -30,9 +33,11 @@ function ContactSection(){
                   <h4>Discord</h4>
                   <p>Join our community server</p>
                 </div>
+                </a>
               </div>
 
               <div className="contact-item">
+                <a href="https://github.com/joaoevaristo11/PMHub" target="_blank" rel="noopener noreferrer">
                 <span className="contact-icon">
                   <img src="/images/Contacts/github-mark.png" alt="GitHub" />
                 </span>
@@ -40,6 +45,7 @@ function ContactSection(){
                   <h4>Github</h4>
                   <p>Contribute to the project</p>
                 </div>
+                </a>
               </div>
             </div>
           </div>

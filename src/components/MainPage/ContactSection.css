@@ -44,9 +44,17 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: rgba(157, 78, 221, 0.1);
   border-radius: 12px;
-  border-left: 4px solid #9D4EDD;
+  border-left: 4px solid #ed08d6ff;
+}
+
+.contact-item a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
 }
 
 .contact-icon {
@@ -73,10 +81,10 @@
 }
 
 .contact-form {
-  background: rgba(26, 15, 46, 0.8);
   padding: 40px;
   border-radius: 16px;
   border: 1px solid #333;
+  box-shadow: rgba(248, 5, 5, 0.25) 0px 14px 20px, rgba(246, 9, 242, 0.22) 0px 10px 20px;
 }
 
 .form-sec {
@@ -103,7 +111,7 @@
 
 .contact-button {
   width: 100%;
-  background: linear-gradient(135deg, #8d36d4, #c146c1);
+  background: radial-gradient(circle at center, #e00de0ff, #862b2aff);
   color: white;
   border: none;
   padding: 16px 32px;
@@ -115,6 +123,70 @@
 }
 
 .contact-button:hover {
-  background: linear-gradient(135deg, #7312a7, #9D4EDD);
-  transform: translateY(-2px);
+  background: radial-gradient(circle at center, #f04eff, #9612a7ff);
+  box-shadow: 0 0 18px rgba(228, 25, 255, 0.5), 0 0 32px rgba(157, 78, 221, 0.4);
+  transform: translateY(-3px);
+}
+
+
+.contact-item a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: 0.4s ease;
+}
+
+.contact-item a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 101%;
+  height: 100%;
+background: linear-gradient(135deg, #060606ff, #fc08f4ff);
+  -webkit-mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
+  mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
+  -webkit-mask-size: 2300% 100%;
+  mask-size: 2300% 100%;
+  z-index: 1;
+  animation: ani2 0.7s steps(22) forwards;
+  transition: all 0.5s;
+  pointer-events: none;
+}
+
+.contact-item a:hover::before {
+  animation: ani 0.7s steps(22) forwards;
+}
+
+.contact-item * {
+  z-index: 2;
+  position: relative;
+}
+
+@keyframes ani {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+}
+
+@keyframes ani2 {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
 }
