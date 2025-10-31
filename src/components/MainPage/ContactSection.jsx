@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./ContactSection.css"
 
 function ContactSection(){
@@ -15,7 +16,7 @@ function ContactSection(){
 
             <div className="contact-info">
               <div className="contact-item">
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=joao.evaristo.work@gmail.com"   target="_blank" rel="noopener noreferrer">
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=joao.evaristo.work@gmail.com" target="_blank" rel="noopener noreferrer">
                 <span className="contact-icon">📧</span>
                 <div>
                   <h4>Email</h4>

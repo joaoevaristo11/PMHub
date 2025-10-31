@@ -121,7 +121,7 @@ function HomePage() {
 
       {/* Rodapé */}
       <div className="copyright">
-        <p>Copyright © PMHub Programming Team.</p>
+        <p>Copyright © YUNO Programming Team.</p>
       </div>
     </div>
   )

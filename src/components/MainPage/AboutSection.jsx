@@ -13,7 +13,7 @@ function AboutSection(){
             transition={{ duration: 1 }}
             viewport={{ once: true }}
           >
-            <h2>About PMHUB</h2>
+            <h2>About YourTake</h2>
             <p className="about-subtitle">All Your Media. One Hub.</p>
             <p className="about-description">
               PMHub is your ultimate companion to track, rate, and share everything you watch, read, or play.
