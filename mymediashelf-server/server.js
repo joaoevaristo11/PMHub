@@ -1,10 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
-import ExcelJS from "exceljs";
 import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import fs from "fs";
 
 dotenv.config();
 const app = express();
@@ -12,40 +12,42 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rotas
+// Rotas de autenticação
 app.use("/api/auth", authRoutes);
 
-app.post("/api/contact", async(req, res)=>{
-  const {name, email, body} = req.body
-  const filePath = path.join("messages.xlsx")
-  const workbook = new ExcelJS.Workbook()
-  let worksheet
+// 📩 Rota para guardar mensagens no CSV
+app.post("/api/contact", async (req, res) => {
+  const { name, email, message } = req.body;
 
-  try{
-    // Se o ficheiro já existir, carregá-lo
-    if(fs.existsSync(filePath)){
-      await workbook.xlsx.readFile(filePath)
-      worksheet = workbook.getWorksheet("Messages")
-    }else{
-      // Caso contrário, criar novo
-      worksheet = workbook.addWorksheet("Messages")
-      worksheet.columns = [
-        {header: "Name", key: "name"},
-        { header: "Email", key: "email" },
-        { header: "Message", key: "message" },
-        { header: "Date", key: "date" },
-      ]
+  // Caminho absoluto seguro
+  const dir = path.resolve(process.cwd(), "data");
+  const filePath = path.join(dir, "messages.csv");
+
+  try {
+    // Garante que a pasta "data" existe
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log("📁 Pasta 'data' criada.");
     }
 
-    worksheet.addRow({name, email, message, date: new Date().toLocaleString(),})
-    await worksheet.xlsx.writeFile(filePath)
+    // Cria o ficheiro se não existir
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, "\uFEFFName;Email;Message;Date\n", "utf8");
+      console.log("🆕 Ficheiro CSV criado.");
+    }
 
-    res.status(200).json({ message: "Message saved successfully!" });
-  }catch(err){
+    const date = new Date().toLocaleString("pt-PT");
+    const line = `"${name}";"${email}";"${message.replace(/"/g, '""')}";"${date}"\n`;
+
+    fs.appendFileSync(filePath, line, "utf8");
+
+    console.log(`✅ Nova mensagem de ${name} guardada no CSV.`);
+    res.status(200).json({ message: "Message saved to CSV successfully!" });
+  } catch (err) {
+    console.error("❌ Erro ao guardar mensagem:", err);
     res.status(500).json({ message: "Error saving message", error: err.message });
-
   }
-})
+});
 
 // Conexão MongoDB
 mongoose
@@ -57,5 +59,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
   console.log(`🚀 Servidor a correr em http://localhost:${PORT}`)
 );
-
-

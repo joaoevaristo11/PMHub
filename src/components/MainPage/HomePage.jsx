@@ -61,7 +61,7 @@ function HomePage() {
         <div className="hero-content">
           <div className="logo">
             <img src="/images/logo.png" alt="logo" className="logo-img" />
-            <h2 className="logo-text">PMHub</h2>
+            <h2 className="logo-text">JustTakes</h2>
           </div>
 
           <div className="text-sci">
@@ -121,7 +121,7 @@ function HomePage() {
 
       {/* Rodapé */}
       <div className="copyright">
-        <p>Copyright © YUNO Programming Team.</p>
+        <p>Copyright © JustTakes Programming Team.</p>
       </div>
     </div>
   )

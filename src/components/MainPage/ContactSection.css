@@ -169,6 +169,16 @@ background: linear-gradient(135deg, #060606ff, #fc08f4ff);
   position: relative;
 }
 
+.status-message {
+  opacity: 1;
+  transition: opacity 5s ease-in-out;
+}
+
+.status-message.hide {
+  opacity: 0;
+}
+
+
 @keyframes ani {
   from {
     -webkit-mask-position: 0 0;

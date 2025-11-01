@@ -13,7 +13,7 @@ function AboutSection(){
             transition={{ duration: 1 }}
             viewport={{ once: true }}
           >
-            <h2>About YourTake</h2>
+            <h2>About JustTakes</h2>
             <p className="about-subtitle">All Your Media. One Hub.</p>
             <p className="about-description">
               PMHub is your ultimate companion to track, rate, and share everything you watch, read, or play.
@@ -63,7 +63,7 @@ function AboutSection(){
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <img src="/images/about-illustration.png" alt="PMHub Features" />
+            <img src="/images/about-illustration.png" alt="JustTakes Features" />
           </motion.div>
         </div>
       </div>
