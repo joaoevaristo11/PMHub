@@ -37,8 +37,6 @@ function ContactSection() {
   return (
     <div className="contact-section" id="contact">
       <div className="contact-contender">
-
-        {/* === Secção de texto e info === */}
         <div className="contact-text">
           <h2>Get In Touch</h2>
           <p className="contact-subtittle">Always available for you</p>
@@ -46,10 +44,7 @@ function ContactSection() {
             Have questions, suggestions, or just want to say hello? We'd love to
             hear from you! Reach out to our team.
           </p>
-
-          {/* === Contact Info === */}
           <div className="contact-info">
-            {/* Email */}
             <div className="contact-item">
               <a
                 href="https://mail.google.com/mail/?view=cm&fs=1&to=joao.evaristo.work@gmail.com"
@@ -64,7 +59,6 @@ function ContactSection() {
               </a>
             </div>
 
-            {/* Discord */}
             <div className="contact-item">
               <a
                 href="https://github.com/joaoevaristo11/PMHub"
@@ -84,7 +78,6 @@ function ContactSection() {
               </a>
             </div>
 
-            {/* GitHub */}
             <div className="contact-item">
               <a
                 href="https://github.com/joaoevaristo11/JustTakes"
@@ -106,7 +99,6 @@ function ContactSection() {
           </div>
         </div>
 
-        {/* === Formulário === */}
         <div className="contact-form">
           <form onSubmit={handleSubmit}>
             <div className="form-sec">
@@ -142,12 +134,7 @@ function ContactSection() {
             <button type="submit" className="contact-button">
               Send Message
             </button>
-
-            {status && (
-              <p className="status-message" style={{ marginTop: "10px" }}>
-                {status}
-              </p>
-            )}
+            {status && (<p className="status-message" style={{ marginTop: "10px" }}>{status}</p>)}
           </form>
         </div>
       </div>

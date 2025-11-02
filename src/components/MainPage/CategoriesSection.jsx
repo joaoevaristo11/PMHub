@@ -9,6 +9,7 @@ function CategoriesSection() {
 
         <div className="categories-grid">
           <div className="categories-movies-card">
+            <div className="category-icon">🎬</div>
             <h3>Movies & Series</h3>
             <p>Discover and track your favorite movies, TV shows, cartoons and animes.</p>
             <button className="card-button">Explore</button>
