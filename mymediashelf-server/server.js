@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import fs from "fs";
 
+import reviewRoutes from "./routes/reviewRoutes.js";
+
 dotenv.config();
 const app = express();
 
@@ -14,6 +16,8 @@ app.use(express.json());
 
 // Rotas de autenticação
 app.use("/api/auth", authRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 
 // 📩 Rota para guardar mensagens no CSV
 app.post("/api/contact", async (req, res) => {
