@@ -4,8 +4,8 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register", register); // antes era signup
+router.post("/register", register); 
 router.post("/login", login);
-router.get("/me", authMiddleware, getMe); // nova rota protegida
+router.get("/me", authMiddleware, getMe); 
 
 export default router;

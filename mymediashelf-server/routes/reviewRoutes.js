@@ -5,7 +5,6 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// 📥 Obter todas as reviews (com nome e avatar do user)
 router.get("/", async (req, res) => {
   try {
     const reviews = await Review.find()
@@ -17,7 +16,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✏️ Adicionar review (apenas se logado)
 router.post("/", authMiddleware, async (req, res) => {
   const { rating, title, description } = req.body;
   try {
@@ -27,12 +25,12 @@ router.post("/", authMiddleware, async (req, res) => {
     }
 
     const newReview = new Review({
-      user: req.user.id, // vem do token JWT            
+      user: req.user.id,           
       name: user.name,
       rating,
       title,
       description,
-    });
+    })
     await newReview.save();
     res.status(201).json({ message: "Review added successfully!", review: newReview });
   } catch (err) {

@@ -47,21 +47,21 @@ function ContactSection() {
           <div className="contact-info">
             <div className="contact-item">
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=joao.evaristo.work@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=contact.justtakes@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span className="contact-icon">📧</span>
                 <div>
                   <h4>Email</h4>
-                  <p>joao.evaristo.work@gmail.com</p>
+                  <p>contact.justtakes@gmail.com</p>
                 </div>
               </a>
             </div>
 
             <div className="contact-item">
               <a
-                href="https://github.com/joaoevaristo11/PMHub"
+                href="https://github.com/joaoevaristo11/JustTakes"
                 target="_blank"
                 rel="noopener noreferrer"
               >
