@@ -111,6 +111,64 @@
   text-decoration: underline;
 }
 
+.confirm-overlay {
+  isolation: isolate;
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000; 
+  animation: fadeIn 0.3s ease;
+}
+
+.confirm-box {
+  background: radial-gradient(circle at center, #5d065fff, #050505ff);
+  padding: 30px;
+  border-radius: 14px;
+  width: 320px;
+  color: white;
+  box-shadow: 0 0 25px rgba(254, 0, 0, 0.4);
+  text-align: center;
+  animation: scaleUp 0.25s ease;
+}
+
+.confirm-box h3 {
+  color: #fb05e2ff;
+  margin-bottom: 15px;
+}
+
+.confirm-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  background: #333;
+  color: #fff;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel-btn:hover {
+  background: radial-gradient(circle at center, #7d0202ff, #050505ff);
+}
+
+.confirm-btn:hover{
+  background: radial-gradient(circle at center, #f805f0ff, #f7f6f6ff);
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+
 /* --- Botão principal --- */
 .btn {
   width: 100%;
@@ -245,10 +303,11 @@
   border-radius: 8px;
   font-size: 15px;
   color: white;
-  backdrop-filter: blur(6px);
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   animation: slideUp 0.4s ease, fadeOut 0.4s ease 2.6s forwards;
-  z-index: 200;
+  z-index: 10000; /* acima do overlay */
+  backdrop-filter: none !important; /* 🔥 impede o blur do overlay */
+  pointer-events: none; /* evita bloquear cliques */
 }
 
 /* Tipos */
