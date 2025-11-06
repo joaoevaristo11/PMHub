@@ -274,7 +274,7 @@ return (
 
     {/* ---------- Sign Up ---------- */}
     <div className="form-box register">
-      <form onSubmit={handleSignup}>
+      <form>
         <h2>Sign Up</h2>
 
         <div className="input-box">
