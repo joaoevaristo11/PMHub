@@ -89,7 +89,9 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // 🔹 Procurar utilizador
-    const user = await User.findOne({ email });
+    console.log("📥 Novo registo recebido para:", email);
+    const existingUser = await User.findOne({ email });
+    console.log("🔍 Resultado da pesquisa:", existingUser);
     if (!user)
       return res.status(404).json({ message: "User not found" });
 
