@@ -49,8 +49,8 @@ app.post("/api/contact", async (req, res) => {
 });
 
 mongoose
-  .connect(`${process.env.MONGO_URI}/mymediashelf`)
-  .then(() => console.log("✅ MongoDB conectado à base mymediashelf"))
+  .connect(`${process.env.MONGO_URI}/JustTakes`)
+  .then(() => console.log("✅ MongoDB conectado à base JustTakes"))
   .catch((err) => console.error("❌ Erro MongoDB:", err));
 
 // 🚀 Inicializar servidor
