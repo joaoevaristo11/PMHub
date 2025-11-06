@@ -342,9 +342,14 @@ return (
           </label>
         </div>
 
-        <button type="submit" className="btn small-btn">
+        <button
+          type="button"   
+          className="btn small-btn"
+          onClick={handleSignup}
+        >
           Sign Up
         </button>
+
 
         <div className="login-register">
           <p>
