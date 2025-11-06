@@ -3,10 +3,10 @@ import "./Authentication.css"
 import { createPortal } from "react-dom"
 
 
-const API_URL = "http://localhost:5000/api/auth"
+const API_URL = "https://justtakes.onrender.com/api/auth"
 
 function Authentication() {
-    const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [agreed, setAgreed] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);

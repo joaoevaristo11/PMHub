@@ -48,10 +48,9 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
-// 🔌 Conexão ao MongoDB Atlas
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB conectado"))
+  .connect(`${process.env.MONGO_URI}/mymediashelf`)
+  .then(() => console.log("✅ MongoDB conectado à base mymediashelf"))
   .catch((err) => console.error("❌ Erro MongoDB:", err));
 
 // 🚀 Inicializar servidor
