@@ -53,6 +53,11 @@ mongoose
   .then(() => console.log("✅ MongoDB conectado à base JustTakes"))
   .catch((err) => console.error("❌ Erro MongoDB:", err));
 
+mongoose.connection.on("connected", () => {
+  console.log(`✅ Ligado à base de dados: ${mongoose.connection.name}`);
+});
+
+
 // 🚀 Inicializar servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () =>
