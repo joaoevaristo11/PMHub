@@ -8,6 +8,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import fs from "fs";
 
 dotenv.config();
+console.log("🧩 BREVO_API_KEY:", process.env.BREVO_API_KEY ? "Encontrada ✅" : "Não encontrada ❌");
 const app = express();
 
 app.use(cors());
