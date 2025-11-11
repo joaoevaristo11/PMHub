@@ -13,12 +13,18 @@ function ReviewsSection() {
   const [status, setStatus] = useState("");
   const token = localStorage.getItem("token");
 
+  // ✅ Alterna automaticamente entre ambiente local e online (Render)
+  const API_BASE =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:5000/api"
+      : "https://justtakes.onrender.com/api";
+
   // ✅ Buscar reviews reais da API
   useEffect(() => {
-    fetch("http://localhost:5000/api/reviews")
+    fetch(`${API_BASE}/reviews`)
       .then((res) => res.json())
       .then((data) => setReviews(data))
-      .catch((err) => console.error("Erro ao carregar reviews:", err));
+      .catch((err) => console.error("❌ Erro ao carregar reviews:", err));
   }, []);
 
   // ✅ Atualizar campos do formulário
@@ -36,7 +42,7 @@ function ReviewsSection() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/reviews", {
+      const res = await fetch(`${API_BASE}/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,17 +52,17 @@ function ReviewsSection() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message || "Error submitting review.");
 
       setStatus("✅ Review added successfully!");
       setForm({ rating: 5, title: "", description: "" });
 
-      // Atualiza lista de reviews
+      // Atualiza lista de reviews dinamicamente
       setReviews((prev) => [data.review, ...prev]);
-      setTimeout(() => setStatus(""), 3000);
+      setTimeout(() => setStatus(""), 4000);
     } catch (err) {
       console.error("❌ Erro ao enviar review:", err);
-      setStatus("❌ Error submitting review.");
+      setStatus("❌ Error submitting review. Please try again later.");
     }
   };
 
@@ -95,13 +101,9 @@ function ReviewsSection() {
                     className="avatar"
                   />
                   <div className="review-header">
-                    <p className="user-name">
-                      {review.user?.name || "Anonymous"}
-                    </p>
-                    <p className="user-rating">
-                      {"⭐".repeat(review.rating)}
-                    </p>
-                    <p className="review-meta">{review.title}</p>
+                    <p className="user-name">{review.user?.name || "Anonymous"}</p>
+                    <p className="user-rating">{"⭐".repeat(review.rating)}</p>
+                    {review.title && <p className="review-meta">{review.title}</p>}
                   </div>
                   <p className="review-description">{review.description}</p>
                 </div>

@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import User from "../models/User.js";
 
 // ---------- REGISTO ----------
+// ---------- REGISTO ----------
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -15,31 +16,40 @@ export const register = async (req, res) => {
 
     // encriptar password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword, verified: false});
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      verified: false,
+    });
     await newUser.save();
 
-     // 🔹 Gera token de verificação (válido 1h)
-    const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET,{
-      expiresIn: "1h"
-    })
+    // 🔹 Gera token de verificação (válido 1h)
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // 🔹 Link de verificação adaptável (local/render)
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://justtakes.onrender.com"
+        : "http://localhost:5000";
+    const verifyUrl = `${baseUrl}/api/auth/verify?token=${token}`;
 
     // 🔹 Configurar transporte de email
     const transporter = nodemailer.createTransport({
       service: "gmail",
-      auth:{
+      auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
-      }
-    })
-
-    // 🔹 Link de verificação
-    const verifyUrl = `http://localhost:5000/api/auth/verify?token=${token}`;
+      },
+    });
 
     // 🔹 Envia o email
     await transporter.sendMail({
       from: `"JustTakes" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Verifiy you JustTakes account",
+      subject: "Verify your JustTakes account",
       html: `
         <h2>Welcome, ${name}!</h2>
         <p>Thank you for registering on <strong>JustTakes</strong>.</p>
@@ -48,12 +58,12 @@ export const register = async (req, res) => {
         <br><br>
         <p>This link will expire in 1 hour.</p>
       `,
-    })
+    });
 
     res.status(201).json({
-       message: "User registered successfully! Please check your email to verify your account.",
-    })
-  }catch (err) {
+      message: "User registered successfully! Please check your email to verify your account.",
+    });
+  } catch (err) {
     console.error("Signup error details:", err);
     res.status(500).json({ message: "Signup error", error: err.message });
   }
@@ -89,31 +99,32 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // 🔹 Procurar utilizador
-    console.log("📥 Novo registo recebido para:", email);
+    console.log("📥 Login recebido para:", email);
     const existingUser = await User.findOne({ email });
     console.log("🔍 Resultado da pesquisa:", existingUser);
-    if (!user)
+
+    if (!existingUser)
       return res.status(404).json({ message: "User not found" });
 
-    if (!user.verified)
+    // 🔹 Verificar se o email foi confirmado
+    if (!existingUser.verified)
       return res.status(401).json({ message: "Please verify your email before logging in." });
 
-
     // 🔹 Validar password
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(password, existingUser.password);
     if (!validPassword)
       return res.status(401).json({ message: "Invalid password" });
 
     // 🔹 Verificar se é o primeiro login
     let isFirstLogin = false;
-    if (user.firstLogin === undefined || user.firstLogin === true) {
+    if (existingUser.firstLogin === undefined || existingUser.firstLogin === true) {
       isFirstLogin = true;
-      user.firstLogin = false; // já não é o primeiro login
-      await user.save(); // atualizar na base de dados
+      existingUser.firstLogin = false;
+      await existingUser.save();
     }
 
     // 🔹 Gerar token JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
@@ -124,12 +135,18 @@ export const login = async (req, res) => {
         : "Welcome back!",
       firstLogin: isFirstLogin,
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: {
+        id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+      },
     });
   } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ message: "Login error", error: err.message });
   }
 };
+
 
 
 // ---------- PERFIL (autenticado) ----------
