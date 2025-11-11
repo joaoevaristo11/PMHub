@@ -4,18 +4,25 @@ import nodemailer from "nodemailer";
 import User from "../models/User.js";
 
 // ---------- REGISTO ----------
-// ---------- REGISTO ----------
 export const register = async (req, res) => {
   try {
+    console.log("🟢 [REGISTER] Pedido recebido:", req.body);
+
     const { name, email, password } = req.body;
 
-    // verificar se o email já existe
+    console.log("📩 [STEP 1] A verificar se o email existe...");
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "Email already registered" });
+    console.log("📩 [STEP 1] Resultado do findOne:", existingUser);
 
-    // encriptar password
+    if (existingUser) {
+      console.log("❌ [STEP 1] Email já existente ->", email);
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    console.log("🔐 [STEP 2] A encriptar password...");
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    console.log("💾 [STEP 3] A criar novo utilizador...");
     const newUser = new User({
       name,
       email,
@@ -23,20 +30,24 @@ export const register = async (req, res) => {
       verified: false,
     });
     await newUser.save();
+    console.log("✅ [STEP 3] Utilizador guardado:", newUser._id);
 
-    // 🔹 Gera token de verificação (válido 1h)
+    // Gera token
+    console.log("🎫 [STEP 4] A gerar token JWT...");
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // 🔹 Link de verificação adaptável (local/render)
+    // Define URL de verificação
     const baseUrl =
       process.env.NODE_ENV === "production"
         ? "https://justtakes.onrender.com"
         : "http://localhost:5000";
     const verifyUrl = `${baseUrl}/api/auth/verify?token=${token}`;
+    console.log("🔗 [STEP 4] URL de verificação:", verifyUrl);
 
-    // 🔹 Configurar transporte de email
+    // Configurar email
+    console.log("📤 [STEP 5] A configurar transporte de email...");
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -45,7 +56,8 @@ export const register = async (req, res) => {
       },
     });
 
-    // 🔹 Envia o email
+    // Enviar email
+    console.log("📨 [STEP 6] A enviar email para:", email);
     await transporter.sendMail({
       from: `"JustTakes" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -60,14 +72,17 @@ export const register = async (req, res) => {
       `,
     });
 
+    console.log("✅ [STEP 6] Email enviado com sucesso!");
     res.status(201).json({
-      message: "User registered successfully! Please check your email to verify your account.",
+      message:
+        "User registered successfully! Please check your email to verify your account.",
     });
   } catch (err) {
-    console.error("Signup error details:", err);
+    console.error("❌ [REGISTER ERROR]:", err);
     res.status(500).json({ message: "Signup error", error: err.message });
   }
-}
+};
+
 
 export const verifyEmail = async(req, res)=>{
   try{
