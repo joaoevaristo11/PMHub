@@ -58,6 +58,10 @@ export const register = async (req, res) => {
 
     // Enviar email
     console.log("📨 [STEP 6] A enviar email para:", email);
+    await transporter.verify()
+    .then(() => console.log("✅ SMTP Gmail pronto para envio"))
+    .catch((err) => console.error("❌ SMTP Gmail erro:", err));
+
     await transporter.sendMail({
       from: `"JustTakes" <${process.env.EMAIL_USER}>`,
       to: email,
