@@ -14,10 +14,8 @@ function ReviewsSection() {
   const token = localStorage.getItem("token");
 
   // ✅ Define automaticamente a API correta (local ou Render)
-  const API_BASE =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000/api"
-      : "https://justtakes.onrender.com/api";
+  const API_BASE = "https://justtakes.onrender.com/api";
+
 
   // ✅ Buscar reviews da API
   useEffect(() => {
