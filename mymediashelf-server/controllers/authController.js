@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import fetch from "node-fetch"; // ⚡ usamos fetch em vez de nodemailer
 import User from "../models/User.js";
 
 // ---------- REGISTO ----------
@@ -9,7 +9,7 @@ export const register = async (req, res) => {
     console.log("🟢 [REGISTER] Pedido recebido:", req.body);
     const { name, email, password } = req.body;
 
-    // Verificar se o email já existe
+    // 🔹 Verificar se o email já existe
     console.log("📩 A verificar se o email existe...");
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -17,16 +17,16 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Encriptar password
+    // 🔹 Encriptar password
     console.log("🔐 A encriptar password...");
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Criar novo utilizador
+    // 🔹 Criar novo utilizador
     const newUser = new User({ name, email, password: hashedPassword, verified: false });
     await newUser.save();
     console.log("✅ Utilizador criado:", newUser._id);
 
-    // Gerar token JWT
+    // 🔹 Gerar token de verificação
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     const baseUrl =
@@ -37,37 +37,36 @@ export const register = async (req, res) => {
     const verifyUrl = `${baseUrl}/api/auth/verify?token=${token}`;
     console.log("🔗 URL de verificação:", verifyUrl);
 
-    // Criar transportador SMTP (Brevo)
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST, // smtp-relay.brevo.com
-      port: parseInt(process.env.EMAIL_PORT) || 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER, // ex: 9b5f35001@smtp-brevo.com
-        pass: process.env.EMAIL_PASS, // a tua chave SMTP do Brevo
+    // ---------- Enviar email via Brevo API ----------
+    console.log("📨 A enviar email de verificação via Brevo API...");
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "api-key": process.env.BREVO_API_KEY,
+        "content-type": "application/json",
       },
+      body: JSON.stringify({
+        sender: { name: "JustTakes", email: "contact.justtakes@gmail.com" },
+        to: [{ email }],
+        subject: "Verify your JustTakes account",
+        htmlContent: `
+          <h2>Welcome, ${name}!</h2>
+          <p>Thank you for registering on <strong>JustTakes</strong>.</p>
+          <p>Please confirm your email by clicking the link below:</p>
+          <a href="${verifyUrl}" target="_blank">${verifyUrl}</a>
+          <br><br><p>This link will expire in 1 hour.</p>
+        `,
+      }),
     });
 
-    console.log("📤 A verificar ligação SMTP...");
-    await transporter.verify()
-      .then(() => console.log("✅ Ligação SMTP (Brevo) bem-sucedida!"))
-      .catch((err) => console.error("❌ Erro na ligação SMTP:", err));
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("❌ Erro ao enviar email via Brevo:", errText);
+      return res.status(500).json({ message: "Failed to send verification email" });
+    }
 
-    console.log("📨 A enviar email de verificação...");
-    await transporter.sendMail({
-      from: `"JustTakes" <contact.justtakes@gmail.com>`, // o que aparece ao utilizador
-      to: email,
-      subject: "Verify your JustTakes account",
-      html: `
-        <h2>Welcome, ${name}!</h2>
-        <p>Thank you for registering on <strong>JustTakes</strong>.</p>
-        <p>Please confirm your email by clicking the link below:</p>
-        <a href="${verifyUrl}" target="_blank">${verifyUrl}</a>
-        <br><br><p>This link will expire in 1 hour.</p>
-      `,
-    });
-
-    console.log("✅ Email enviado com sucesso via Brevo!");
+    console.log("✅ Email de verificação enviado com sucesso via Brevo!");
     res.status(201).json({ message: "User registered successfully! Please check your email." });
   } catch (err) {
     console.error("❌ [REGISTER ERROR]:", err);
@@ -82,13 +81,10 @@ export const verifyEmail = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.id);
-    if (!user) {
-      return res.status(404).send("<h2>User not found ❌</h2>");
-    }
+    if (!user) return res.status(404).send("<h2>User not found ❌</h2>");
 
-    if (user.verified) {
+    if (user.verified)
       return res.status(200).send("<h2>Email already verified ✅</h2>");
-    }
 
     user.verified = true;
     await user.save();
