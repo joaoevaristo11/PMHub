@@ -13,19 +13,27 @@ function ReviewsSection() {
   const [status, setStatus] = useState("");
   const token = localStorage.getItem("token");
 
-  // ✅ Alterna automaticamente entre ambiente local e online (Render)
+  // ✅ Define automaticamente a API correta (local ou Render)
   const API_BASE =
-    import.meta.env.MODE === "development"
+    window.location.hostname === "localhost"
       ? "http://localhost:5000/api"
       : "https://justtakes.onrender.com/api";
 
-  // ✅ Buscar reviews reais da API
+  // ✅ Buscar reviews da API
   useEffect(() => {
-    fetch(`${API_BASE}/reviews`)
-      .then((res) => res.json())
-      .then((data) => setReviews(data))
-      .catch((err) => console.error("❌ Erro ao carregar reviews:", err));
-  }, []);
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/reviews`);
+        if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+        const data = await res.json();
+        setReviews(data);
+      } catch (err) {
+        console.error("❌ Erro ao carregar reviews:", err);
+        setStatus("❌ Error loading reviews. Please try again later.");
+      }
+    };
+    fetchReviews();
+  }, [API_BASE]);
 
   // ✅ Atualizar campos do formulário
   const handleChange = (e) => {
@@ -57,7 +65,7 @@ function ReviewsSection() {
       setStatus("✅ Review added successfully!");
       setForm({ rating: 5, title: "", description: "" });
 
-      // Atualiza lista de reviews dinamicamente
+      // Atualiza lista dinamicamente
       setReviews((prev) => [data.review, ...prev]);
       setTimeout(() => setStatus(""), 4000);
     } catch (err) {
@@ -112,7 +120,7 @@ function ReviewsSection() {
           </Swiper>
         )}
 
-        {/* === Formulário de nova review (apenas se logado) === */}
+        {/* === Formulário de nova review === */}
         {token && (
           <form className="add-review-form" onSubmit={handleSubmit}>
             <h3>Leave your review</h3>

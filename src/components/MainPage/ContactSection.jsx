@@ -5,6 +5,12 @@ function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("");
 
+  // ✅ Detecta ambiente local vs Render
+  const API_BASE =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000/api"
+      : "https://justtakes.onrender.com/api";
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -14,7 +20,7 @@ function ContactSection() {
     console.log("📤 A enviar formulário:", form);
 
     try {
-      const res = await fetch("http://localhost:5000/api/contact", {
+      const res = await fetch(`${API_BASE}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -25,12 +31,12 @@ function ContactSection() {
 
       if (!res.ok) throw new Error(data.message);
 
-      setStatus("Message sent! ✅");
+      setStatus("✅ Message sent successfully!");
       setForm({ name: "", email: "", message: "" });
-      setTimeout(() => setStatus(""), 3000);
+      setTimeout(() => setStatus(""), 4000);
     } catch (err) {
       console.error("❌ Erro ao enviar:", err);
-      setStatus("Error sending message. ❌");
+      setStatus("❌ Error sending message. Please try again later.");
     }
   };
 
@@ -44,6 +50,7 @@ function ContactSection() {
             Have questions, suggestions, or just want to say hello? We'd love to
             hear from you! Reach out to our team.
           </p>
+
           <div className="contact-info">
             <div className="contact-item">
               <a
@@ -61,15 +68,12 @@ function ContactSection() {
 
             <div className="contact-item">
               <a
-                href="https://github.com/joaoevaristo11/JustTakes"
+                href="https://discord.gg/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span className="contact-icon">
-                  <img
-                    src="/images/Contacts/discord_clyde.png"
-                    alt="Discord"
-                  />
+                  <img src="/images/Contacts/discord_clyde.png" alt="Discord" />
                 </span>
                 <div>
                   <h4>Discord</h4>
@@ -85,10 +89,7 @@ function ContactSection() {
                 rel="noopener noreferrer"
               >
                 <span className="contact-icon">
-                  <img
-                    src="/images/Contacts/github-mark.png"
-                    alt="GitHub"
-                  />
+                  <img src="/images/Contacts/github-mark.png" alt="GitHub" />
                 </span>
                 <div>
                   <h4>GitHub</h4>
@@ -111,6 +112,7 @@ function ContactSection() {
                 required
               />
             </div>
+
             <div className="form-sec">
               <input
                 type="email"
@@ -121,6 +123,7 @@ function ContactSection() {
                 required
               />
             </div>
+
             <div className="form-sec">
               <textarea
                 name="message"
@@ -131,10 +134,15 @@ function ContactSection() {
                 required
               />
             </div>
+
             <button type="submit" className="contact-button">
               Send Message
             </button>
-            {status && (<p className="status-message" style={{ marginTop: "10px" }}>{status}</p>)}
+            {status && (
+              <p className="status-message" style={{ marginTop: "10px" }}>
+                {status}
+              </p>
+            )}
           </form>
         </div>
       </div>
