@@ -11,8 +11,8 @@ function VerifyEmail() {
       const token = params.get("token");
 
       if (!token) {
-        setStatus("error");
-        setMessage("Invalid verification link");
+        setStatus("preview");
+        setMessage("Preview mode — no token provided.");
         return;
       }
 
@@ -20,13 +20,16 @@ function VerifyEmail() {
         const res = await fetch(`https://justtakes.onrender.com/api/auth/verify?token=${token}`);
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.message);
-
-        setStatus("success");
-        setMessage(data.message);
+        if (res.ok) {
+          setStatus("success");
+          setMessage(data.message);
+        } else {
+          setStatus("error");
+          setMessage(data.message || "Invalid or expired link");
+        }
       } catch (err) {
         setStatus("error");
-        setMessage(err.message);
+        setMessage("Server connection failed.");
       }
     };
 
@@ -34,27 +37,53 @@ function VerifyEmail() {
   }, []);
 
   return (
-    <div className={`verify-container ${status}`}>
+    <section className={`verify-container ${status}`}>
+      {/* 🌊 Fundo animado */}
+      <div className="wave">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      {/* 📦 Conteúdo principal */}
       <div className="verify-box">
-        {status === "loading" && <p>🔄 Verifying your email...</p>}
+        {status === "loading" && (
+          <>
+            <h1>Verifying your email...</h1>
+            <p>Please wait a moment ⏳</p>
+          </>
+        )}
+
         {status === "success" && (
           <>
             <img src="/images/success-icon.png" alt="Success" />
-            <h1>Email Verified 🎉</h1>
+            <h1>Email Verified ✅</h1>
             <p>{message}</p>
-            <a href="/" className="btn">Go to JustTakes</a>
+            <a href="/" className="btn">
+              Go to JustTakes
+            </a>
           </>
         )}
+
         {status === "error" && (
           <>
             <img src="/images/error-icon.png" alt="Error" />
             <h1>Verification Failed ❌</h1>
             <p>{message}</p>
-            <a href="/" className="btn">Back to Home</a>
+            <a href="/" className="btn">
+              Back to Home
+            </a>
+          </>
+        )}
+
+        {status === "preview" && (
+          <>
+            <h1>Preview Mode 👀</h1>
+            <p>This is just a design preview of the verification page.</p>
           </>
         )}
       </div>
-    </div>
+    </section>
   );
 }
 
