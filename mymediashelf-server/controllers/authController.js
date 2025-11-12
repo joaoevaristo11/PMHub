@@ -29,12 +29,13 @@ export const register = async (req, res) => {
     // 🔹 Gerar token de verificação
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" })
 
-    const baseUrl =
+    const frontendUrl =
       process.env.NODE_ENV === "production"
-        ? "https://justtakes.onrender.com"
-        : "http://localhost:5000"
+        ? "https://justtakes.vercel.app" // 👈 frontend (Vercel)
+        : "http://localhost:5173";        // 👈 local frontend (Vite)
 
-    const verifyUrl = `${baseUrl}/api/auth/verify?token=${token}`
+    const verifyUrl = `${frontendUrl}/verify?token=${token}`;
+
     console.log("🔗 URL de verificação:", verifyUrl)
 
     // ---------- Enviar email via Brevo API ----------

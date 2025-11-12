@@ -16,7 +16,7 @@ function AboutSection(){
             <h2>About JustTakes</h2>
             <p className="about-subtitle">All Your Media. One Hub.</p>
             <p className="about-description">
-              PMHub is your ultimate companion to track, rate, and share everything you watch, read, or play.
+              JusTakes is your ultimate companion to track, rate, and share everything you watch, read, or play.
               From movies and series to anime, manga, books, and games — organize your media life in one
               intuitive and modern platform.
             </p>
