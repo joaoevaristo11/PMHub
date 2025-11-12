@@ -69,21 +69,21 @@
 }
 
 .categories-movies-card {
-  background-image: url('../images/CategoriesCards/JohnSnow.jpg');
+  background-image: url("/images/CategoriesCards/JohnSnow.jpg");
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
 }
 
 .books-card{
-  background-image: url('./images/CategoriesCards/nightreading.jpg');
+  background-image: url("/images/CategoriesCards/nightreading.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .games-card{
-  background-image: url('./images/CategoriesCards/Ellie.jpg');
+  background-image: url("/images/CategoriesCards/Ellie.jpg");
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;

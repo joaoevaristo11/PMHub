@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/MainPage/NavBar";
 import HomePage from "./components/MainPage/HomePage";
+import VerifyEmail from "./components/MainPage/VerifyEmail"; // ✅ novo import
 import "./App.css";
 
 function App() {
@@ -12,7 +13,10 @@ function App() {
           {/* Página principal */}
           <Route path="/" element={<HomePage />} />
 
-          {/* Outras rotas futuras */}
+          {/* Página de verificação de email */}
+          <Route path="/verify" element={<VerifyEmail />} />  {/* ✅ nova rota */}
+
+          {/* Outras rotas */}
           <Route
             path="/movies"
             element={
