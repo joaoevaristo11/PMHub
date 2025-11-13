@@ -1,14 +1,15 @@
-
-/* Reset básico */
+/* =========================================
+   RESET
+========================================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -18,265 +19,322 @@ body {
 
 .homepage {
   width: 100%;
+  overflow-x: hidden;
 }
 
-/*------------- HERO SECTION -------------*/
-
-.background{
-  width: 100%;
-  height: 100vh;
+/* =========================================
+   BACKGROUND CAROUSEL (atrás de TUDO)
+========================================= */
+.background {
   position: relative;
+  width: 100%;
+  padding-top: 80px;
+  padding-bottom: 140px;
   overflow: hidden;
 }
 
 .background-slide {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   filter: blur(10px) brightness(0.6);
   opacity: 0;
   transition: opacity 1.5s ease-in-out;
+  z-index: 1;
 }
 
 .background-slide.active {
   opacity: 1;
 }
 
-.hero-slide {
+/* =========================================
+   BLUR FIXO ATRÁS DO PAINEL
+========================================= */
+.hero-blur-overlay {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  right: 0;
+  width: 45%;   /* só o lado direito */
   height: 100%;
+  backdrop-filter: blur(20px);
+  background: rgba(0,0,0,0.15);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========================================
+   HERO CONTAINER (camada 3)
+========================================= */
+.hero-container {
+  position: relative;
+  width: min(1300px, 90%);
+  margin: 40px auto 60px auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: nowrap;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: 10px;
+  backdrop-filter: blur(20px);
+}
+
+.hero-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.45); /* ESCURECE AQUI */
+  pointer-events: none;
+  z-index: 2;              /* SUBE DE 0 → 2 */
+
+}
+
+/* =========================================
+   HERO SLIDES (IMAGENS DENTRO DO PAINEL)
+========================================= */
+.hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 1.5s ease-in-out;
-  border-radius: 10px;
-  filter: brightness(0.6); /* reduz brilho para 50% */
 }
 
 .hero-slide.active {
   opacity: 1;
 }
 
-/* Garantir que o conteúdo fique acima das imagens */
-.hero-content {
+/* =========================================
+   HERO LEFT
+========================================= */
+.hero-left {
+  flex: 0 0 50%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 50px;
   position: relative;
-  z-index: 10;
-  width: 58%;
-  height: 100%;
-  background: transparent;
-  padding: 80px;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
+  z-index: 5;
 }
 
-.hero-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  width: 75%;
-  height: 550px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 10px;
-  margin-top: 20px;
+/* Máscara atrás da esquerda */
+
+
+.hero-left * {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.55),
+               0 3px 12px rgba(0,0,0,0.45);
+  -webkit-text-stroke: 0.25px rgba(0,0,0,0.3);
 }
 
-.hero-container .hero-content{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width:58%;
-  height: 100%;
-  background: transparent;
-  padding: 80px;
-  color: #f3f2f5ff;
+.logo {
   display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6); /* sombra suave */
-}
-
-.logo{
-  display: flex;
-  align-items: center; /* centra verticalmente */
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .logo-img {
   width: 140px;
-  transition: all 0.4s ease;
-  filter: drop-shadow(0 0 10px rgba(253, 8, 237, 0.7)); /* brilho inicial roxo */
+  transition: 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(253, 8, 237, 0.7));
 }
 
 .logo-img:hover {
-  transform: scale(1.08); /* cresce ligeiramente */
-  filter: drop-shadow(0 0 25px rgba(253, 5, 174, 1)) brightness(1.3);
+  transform: scale(1.05);
 }
 
 .logo-text {
-  font-size: 40px;
-  color: white;
+  font-size: clamp(30px, 4vw, 42px);
   font-weight: bold;
 }
 
-.text-sci h2{
-  font-size:40px;
+.hero-text h2 {
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 600;
 }
 
-.text-sci h2 span{
-  font-size: 25px;
-  color: #da0cf9ff;
+.hero-text span {
+  font-size: clamp(22px, 3vw, 28px);
+  color: #da0cf9;
 }
 
-.text-sci p{
+.hero-text p {
+  margin-top: 18px;
+  color: #ccc;
   font-size: 16px;
-  margin: 20px 0;
-  color: #9f9e9fff
+  line-height: 1.6;
 }
 
-.social-icons{ 
-  position: absolute;
-  top: 600px; /* ajuste conforme necessário */
-  left: 26%;
-  transform: translateX(-50%);
-  z-index: 10;
-}
-/* lista */
-.social-icons ul {
-  display: flex;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-}
-
-/* cada botão */
-.social-icons ul li {
-  position: relative;
-  list-style: none;
-  width: 45px;
-  height: 45px;
-  background: transparent;
-  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15);
-  border-radius: 60px;
-  cursor: pointer;
+/* =========================================
+   HERO RIGHT
+========================================= */
+.hero-right {
+  flex: 0 0 40%;
+  max-width: 700px;
+  min-width: 380px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: width 0.45s cubic-bezier(.2,.8,.2,1);
+  z-index: 5;
+}
+
+/* ========================================= SOCIAL ICONS ========================================= */ 
+.social-icons { 
+  margin-top: 35px; 
+  display: flex; 
+  justify-content: 
+  flex-start; 
+} 
+
+.social-icons ul { 
+  display: flex; 
+  gap: 22px; 
+  align-items: center; 
+}
+
+.social-icons ul li { 
+  position: relative; 
+  list-style: none; 
+  width: 45px; 
+  height: 45px; 
+  border-radius: 60px; 
+  background: transparent; 
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2); 
+  cursor: pointer; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  transition: width 0.45s cubic-bezier(.2,.8,.2,1); 
   overflow: hidden; 
-}
+} 
 
-/* gradiente que aparece por cima do fundo (mas por baixo do texto) */
-.social-icons ul li::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 60px;            /* mesma radius do li */
-  background: linear-gradient(45deg, var(--i), var(--j));
-  opacity: 0;
-  transition: opacity 0.45s;
-  z-index: 0;                     /* por baixo do conteúdo (ícone/título) */
-}
+/* GRADIENT / BRILHO */ 
+.social-icons ul li::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  border-radius: inherit; 
+  background: linear-gradient(45deg, var(--i), var(--j)); 
+  opacity: 0; 
+  transition: opacity 0.45s; 
+  z-index: 0; 
+} 
 
-/* brilho desfocado por trás */
-.social-icons ul li::after {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 60px;
-  background: linear-gradient(45deg, var(--i), var(--j));
-  filter: blur(15px);
-  transition: opacity 0.45s;
-  opacity: 0;
-  z-index: -1;
-}
+.social-icons ul li::after { 
+  content: ""; 
+  position: absolute; 
+  width: 100%; 
+  height: 100%; 
+  top: 10px; 
+  border-radius: inherit; 
+  background: linear-gradient(45deg, var(--i), var(--j)); 
+  filter: blur(15px); 
+  opacity: 0; 
+  transition: opacity 0.45s; 
+  z-index: -1; 
+} 
 
-.social-icons ul li:hover {
-  width: 180px; 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
+/* EXPANSÃO HOVER */ 
+.social-icons ul li:hover { width: 150px; } 
 
-/* ativa o gradiente e o glow no hover */
-.social-icons ul li:hover::before { opacity: 1; }
-.social-icons ul li:hover::after { opacity: 0.45; }
+.social-icons ul li:hover::before { opacity: 1; } 
 
-/* conteúdo (ícone + título) acima do gradiente */
-.social-icons ul li .icon,
-.social-icons ul li .title {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
+.social-icons ul li:hover::after { opacity: 0.5; } 
 
-/* ícone */
-.social-icons ul li .icon ion-icon {
-  color: #fd08fdff;
-  font-size: 1.4em;
-  transition: transform 0.35s, color 0.2s;
-  transition-delay: 0.1s;
-}
+.social-icons .icon, .social-icons .title { 
+  position: relative; 
+  z-index: 2; 
+} 
 
-/* esconde o ícone ao fazer hover (dá lugar ao texto) */
-.social-icons ul li:hover .icon ion-icon {
-  transform: scale(0);
-  color: #fff;
-  transition-delay: 0s;
-}
+.social-icons .title { 
+  position: absolute; 
+  left: 50%; 
+  top: 50%; 
+  transform: translate(-50%, -50%) scale(0); 
+  color: #fff; 
+  font-size: 14px; 
+  transition: 0.45s; 
+} 
+.social-icons ul li:hover .title { 
+  transform: translate(-50%, -50%) scale(1); 
+} 
 
-/* título — aparece em cima, centrado */
-.social-icons ul li .title {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  color: #fff;
-  font-size: 15px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: transform 0.5s;
-}
+.social-icons ion-icon { 
+  font-size: 1.4em; 
+  color: #ff33ff; 
+  transition: 0.35s; 
+} 
 
-/* ícones (ionicons OU imagens) */
-/* imagens (para o X) */
-.social-icons ul li .social-icon img {
-  width: 22px;
-  height: 22px;
-  transition: transform 0.2s, filter 0.3s;
-  filter: invert(36%) sepia(92%) saturate(7488%) hue-rotate(300deg) brightness(104%) contrast(108%);
-}
+.social-icons ul li:hover ion-icon { 
+  transform: scale(0); 
+} 
 
-/* ao fazer hover (some e dá lugar ao texto, igual aos icons normais) */
-.social-icons ul li:hover .social-icon img {
-  transform: scale(0);
-  filter: brightness(1) invert(1);
-  transition-delay: 0s;
-}
+.social-icons .social-icon img { 
+  width: 22px; 
+  transition: 0.25s ease; 
+  filter: invert(40%) sepia(90%) saturate(4000%) hue-rotate(300deg); 
+} 
 
-
-.social-icons ul li:hover .title {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-/*------------- COPYRIGHT -------------*/
+.social-icons ul li:hover .social-icon img { transform: scale(0); }
+/* =========================================
+   COPYRIGHT
+========================================= */
 .copyright {
-  width: 100%;
   text-align: center;
   padding: 25px 0;
-  background: linear-gradient(to bottom right, #0d0517, rgba(21, 1, 1, 0.8));
+  background: linear-gradient(to bottom right, #12001c, #0c0206);
+  border-top: 1px solid #000;
   font-weight: 300;
-  border-top: 1px solid #010101ff;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+@media (max-width: 1100px) {
+  .hero-container {
+    flex-direction: column;
+    padding: 40px 25px;
+    gap: 40px;
+    margin-top: 140px;
+  }
+
+  .hero-left,
+  .hero-right {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .hero-left {
+    text-align: center;
+    align-items: center;
+    margin-left: 0;
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo-img { width: 110px; }
+  .hero-text h2 { font-size: 28px; }
 }

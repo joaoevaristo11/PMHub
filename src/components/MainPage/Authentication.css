@@ -1,43 +1,111 @@
-/* --- Estrutura principal do painel de autenticação --- */
-.hero-container .hero-logreg-box {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 42%;
-  height: 100%;
-  background: transparent;
+/************************************
+    PAINEL DE LOGIN / REGISTER
+************************************/
+
+.auth-panel {
+  width: 100%;
+  max-width: none;
+  min-height: 520px;
+
   backdrop-filter: blur(20px);
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  color: white;
+  position: relative;
   overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  box-shadow: none;
+  border-radius: 0;
+  z-index: 40;
 }
 
-/* --- Formulário base --- */
+/************************************
+    WRAPPER DOS FORMULÁRIOS
+************************************/
+
+.form-wrapper {
+  width: 100%;
+  position: relative;
+  min-height: 420px;
+}
+
+/************************************
+    FORM BOX + SLIDE
+************************************/
+
 .form-box {
   position: absolute;
+  inset: 0;
+
+  /* 🔥 AQUI ESTÁ A CORREÇÃO DO COMPRIMENTO */
+  width: 90%;
+  max-width: 620px;        /* antes: 480px → AGORA está largo como no design antigo */
+  margin: 0 auto;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.32s ease-in-out, opacity 0.3s ease-in-out;
+
+  transition: transform 0.35s ease, opacity 0.35s ease;
 }
 
-/* --- Título --- */
-.form-box h2 {
-  font-size: 32px;
+.form-box form {
+  width: 100%;
+  max-width: 620px;   /* permite crescer totalmente */
+  margin: 0 auto;
+  padding: 20px;         /* remove padding que estava a encolher */
+}
+
+
+/* LOGIN visível */
+.form-box.login {
+  transform: translateX(0%);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* REGISTER escondido */
+.form-box.register {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Quando ativo → troca */
+.auth-panel.active .form-box.login {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auth-panel.active .form-box.register {
+  transform: translateX(0%);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/************************************
+    TÍTULOS
+************************************/
+
+.auth-panel h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
   text-align: center;
 }
 
-/* --- Campos de input --- */
+/************************************
+    INPUTS
+************************************/
+
 .input-box {
   position: relative;
-  width: 340px;
+  width: 100%;
   height: 50px;
   border-bottom: 2px solid white;
-  margin: 30px 0;
+  margin: 28px 0;
 }
 
 .input-box input {
@@ -47,11 +115,7 @@
   border: none;
   outline: none;
   color: white;
-  font-size: 16px;
-  font-weight: 500;
-  padding-left: 5px;
-  margin-top: 10px;
-  padding-right: 30px;
+  font-size: 15px;
 }
 
 .input-box label {
@@ -59,137 +123,72 @@
   top: 50%;
   left: 5px;
   transform: translateY(-50%);
-  font-size: 16px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.6);
+  transition: 0.3s ease;
   pointer-events: none;
-  transition: top 0.4s ease, font-size 0.4s ease, color 0.4s ease;
 }
 
 .input-box input:focus ~ label,
 .input-box input:valid ~ label {
-  top: -5px;
-  transform: translateY(0);
-  font-size: 14px;
+  top: -6px;
+  font-size: 12px;
 }
 
-/* --- Ícones nos inputs --- */
 .input-box .icon {
   position: absolute;
-  right: 8px;
+  right: 4px;
   top: 50%;
   transform: translateY(-50%);
 }
 
 .input-box .icon img {
   width: 18px;
-  height: 18px;
   filter: brightness(0) invert(1);
 }
 
-/* --- Remember / forgot --- */
+/************************************
+    REMEMBER / FORGOT
+************************************/
+
 .remember-forgot {
-  font-size: 14.5px;
-  font-weight: 500;
-  margin: -15px 0 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
 
-.remember-forgot label input {
-  accent-color: white;
-  margin-right: 3px;
-}
-
-.remember-forgot a {
-  color: white;
-  text-decoration: none;
-}
-
-.remember-forgot a:hover {
-  text-decoration: underline;
-}
-
-.confirm-overlay {
-  isolation: isolate;
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5000; 
-  animation: fadeIn 0.3s ease;
-}
-
-.confirm-box {
-  background: radial-gradient(circle at center, #5d065fff, #050505ff);
-  padding: 30px;
-  border-radius: 14px;
-  width: 320px;
-  color: white;
-  box-shadow: 0 0 25px rgba(254, 0, 0, 0.4);
-  text-align: center;
-  animation: scaleUp 0.25s ease;
-}
-
-.confirm-box h3 {
-  color: #fb05e2ff;
-  margin-bottom: 15px;
-}
-
-.confirm-box input {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 15px;
-  background: #333;
-  color: #fff;
-}
-
-.confirm-actions {
-  display: flex;
-  justify-content: space-between;
-}
-
-.cancel-btn:hover {
-  background: radial-gradient(circle at center, #7d0202ff, #050505ff);
-}
-
-.confirm-btn:hover{
-  background: radial-gradient(circle at center, #f805f0ff, #f7f6f6ff);
-}
-
-@keyframes scaleUp {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  max-width: 620px;   /* igual ao .form-box */
+  margin: 5px auto 22px auto; /* espaço equilibrado */
+  padding: 0 4px; /* leve respiro lateral */
+  font-size: 14px;
 }
 
 
+/************************************
+    BOTÕES
+************************************/
 
-/* --- Botão principal --- */
 .btn {
   width: 100%;
-  height: 45px;
-  background: linear-gradient(to bottom, #a1129a, #350837);
+  height: 48px;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+  border-radius: 5px;
+  background: linear-gradient(to right, #9d0af3, #4b0466);
   color: white;
-  font-weight: 500;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 12px;
+  transition: 0.25s ease;
 }
 
 .btn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 15px rgba(161, 18, 154, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(157, 10, 243, 0.5);
 }
 
-/* --- Texto abaixo dos formulários --- */
+/************************************
+    LINKS LOGIN / REGISTER
+************************************/
+
 .login-register {
   font-size: 14.5px;
   font-weight: 500;
@@ -207,28 +206,10 @@
   text-decoration: underline;
 }
 
-/* --- Transição entre Sign In e Sign Up --- */
-.form-box.login {
-  transform: translateX(0);
-  opacity: 1;
-}
+/************************************
+    ERROS E ANIMAÇÕES
+************************************/
 
-.form-box.register {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.hero-logreg-box.active .form-box.login {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-.hero-logreg-box.active .form-box.register {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-/* --- Checkbox de erro (Sign Up sem termos) --- */
 .checkbox-error {
   animation: shake 0.3s ease;
   border: 2px solid #ff4d4d;
@@ -244,41 +225,6 @@
   text-shadow: 0 0 2px rgba(255, 0, 0, 0.5);
 }
 
-/* --- Mensagem pós-login --- */
-.welcome-message {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 42%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-  animation: fadeIn 0.6s ease;
-}
-
-.welcome-message h2 {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-.welcome-message span {
-  color: #a93ee2;
-}
-
-.welcome-message p {
-  font-size: 18px;
-  opacity: 0.9;
-  color: #eadfeeff;
-}
-
-/* --- Animações --- */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -290,10 +236,13 @@
   30%, 60%, 90% { transform: translateX(8px); }
 }
 
-/* Aplica o shake ao formulário de login quando falha */
 .form-box.login.shake {
   animation: shake 0.4s ease;
 }
+
+/************************************
+    TOASTS
+************************************/
 
 .toast {
   position: absolute;
@@ -305,55 +254,53 @@
   color: white;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   animation: slideUp 0.4s ease, fadeOut 0.4s ease 2.6s forwards;
-  z-index: 10000; /* acima do overlay */
-  backdrop-filter: none !important; /* 🔥 impede o blur do overlay */
-  pointer-events: none; /* evita bloquear cliques */
+  z-index: 10000;
+  pointer-events: none;
+  backdrop-filter: none !important;
 }
 
-/* Tipos */
-.toast.success {
-  background: linear-gradient(135deg, #32d74b, #1b7e2b);
-}
-
-.toast.error {
-  background: linear-gradient(135deg, #ff4b4b, #8b0000);
-}
-
-.toast.info {
-  background: linear-gradient(135deg, #007aff, #004e92);
-}
+.toast.success { background: linear-gradient(135deg, #32d74b, #1b7e2b); }
+.toast.error { background: linear-gradient(135deg, #ff4b4b, #8b0000); }
+.toast.info   { background: linear-gradient(135deg, #007aff, #004e92); }
 
 @keyframes slideUp {
   from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes fadeOut {
   to { opacity: 0; transform: translateY(-10px); }
 }
 
-.logout-btn {
-  width: auto !important;   /* impede que a .btn defina 100% */
-  margin-top: 20px;
-  align-self: center;
-  padding: 8px 18px;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  border-radius: 30px;
-  background: transparent;
-  color: #fff;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+/************************************
+    FIX AUTOFILL
+************************************/
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: white !important;
+  transition: background-color 9999s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  caret-color: white !important;
 }
 
-.logout-btn:hover {
-  transform: scale(1.06);
-  background: linear-gradient(135deg, #9f14eaff, #ff0c0cff);
-  box-shadow: 0 0 15px rgba(251, 5, 5, 0.5);
+/************************************
+    RESPONSIVO
+************************************/
+
+@media screen and (max-width: 900px) {
+  .auth-panel {
+    max-width: 100%;
+    margin-top: 25px;
+  }
+
+  .form-wrapper {
+    min-height: 380px;
+  }
+
+  .form-box {
+    max-width: 90%;
+  }
 }
-
-
-
-
