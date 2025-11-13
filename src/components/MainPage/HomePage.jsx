@@ -34,7 +34,7 @@ function HomePage() {
 
   return (
     <div className="homepage">
-
+      <NavBar/>
       {/* Fundo com carrossel */}
       <div className="background">
         {heroImages.map((image, index) => (

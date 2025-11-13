@@ -130,7 +130,7 @@
 
 /* ===== ESTADOS ===== */
 .verify-container.success {
-  background: linear-gradient(135deg, #1b022c, #3c0073);
+  background: linear-gradient(135deg, #00ff84, #087a0fff);
 }
 
 .verify-container.success h1 {
@@ -139,7 +139,7 @@
 }
 
 .verify-container.error {
-  background: linear-gradient(135deg, #250000, #530101);
+  background: linear-gradient(135deg, #ff2e2e, #530101);
 }
 
 .verify-container.error h1 {
@@ -148,7 +148,7 @@
 }
 
 .verify-container.loading {
-  background: linear-gradient(135deg, #2a0046, #6f04c7);
+  background: linear-gradient(135deg, #07caf6ff, #f60be2ff);
 }
 
 .verify-container.loading h1 {
