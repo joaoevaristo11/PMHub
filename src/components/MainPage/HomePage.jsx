@@ -7,6 +7,7 @@ import CategoriesSection from "./CategoriesSection";
 import AboutSection from "./AboutSection";
 import ReviewsSection from './ReviewsSection';
 import ContactSection from './ContactSection';
+import NavBar from './NavBar'
 
 
 function HomePage() {
@@ -34,7 +35,7 @@ function HomePage() {
 
   return (
     <div className="homepage">
-      <NavBar/>
+      <NavBar />
       {/* Fundo com carrossel */}
       <div className="background">
         {heroImages.map((image, index) => (
