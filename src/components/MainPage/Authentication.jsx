@@ -171,6 +171,28 @@ function Authentication() {
     );
   }
 
+  const handleEnterConfirm = (e)=>{
+    if(e.key=="Enter"){
+      e.preventDefault()
+      confirmSignup()
+    }
+  }
+
+  const handleEnterSignUp = (e)=>{
+    if(e.key=="Enter"){
+      e.preventDefault()
+      handleSignup(e)
+    }
+  }
+
+    const handleEnterSignIn = (e)=>{
+    if(e.key=="Enter"){
+      e.preventDefault()
+      handleSignIn(e)
+    }
+  }
+
+
   /* --------------------------- LOGIN / REGISTER PANEL --------------------------- */
   return (
     <div className={`auth-panel ${isRegister ? "active" : ""}`}>
@@ -214,6 +236,7 @@ function Authentication() {
               value={form.password}
               onChange={handleChange}
               required
+              onKeyDown={handleEnterSignIn}
             />
             <label>Password</label>
           </div>
@@ -300,6 +323,7 @@ function Authentication() {
               value={form.password}
               onChange={handleChange}
               required
+              onKeyDown={handleEnterSignUp}
             />
             <label>Password</label>
           </div>
@@ -315,7 +339,7 @@ function Authentication() {
             </label>
           </div>
 
-          <button type="button" className="btn" onClick={handleSignup}>
+          <button type="button" className="btn" onClick={handleSignup} >
             Sign Up
           </button>
 
@@ -343,10 +367,11 @@ function Authentication() {
                 placeholder="Re-enter password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onKeyDown={handleEnterConfirm}
               />
 
               <div className="confirm-actions">
-                <button className="btn" onClick={confirmSignup}>
+                <button className="btn" onClick={confirmSignup} >
                   Confirm
                 </button>
                 <button
