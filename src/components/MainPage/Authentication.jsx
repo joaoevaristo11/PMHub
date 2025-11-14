@@ -260,7 +260,7 @@ function Authentication() {
           <div className="login-register">
             <p>
               Don't have an account?
-              <a href="#" onClick={() => setIsRegister(true)}>
+              <a href="#" className="Bold" onClick={() => setIsRegister(true)}>
                 {" "}
                 Sign up
               </a>

@@ -1,7 +1,6 @@
 /************************************
     PAINEL DE LOGIN / REGISTER
 ************************************/
-
 .auth-panel {
   width: 100%;
   max-width: none;
@@ -23,7 +22,6 @@
 /************************************
     WRAPPER DOS FORMULÁRIOS
 ************************************/
-
 .form-wrapper {
   width: 100%;
   position: relative;
@@ -33,14 +31,12 @@
 /************************************
     FORM BOX + SLIDE
 ************************************/
-
 .form-box {
   position: absolute;
   inset: 0;
 
-  /* 🔥 AQUI ESTÁ A CORREÇÃO DO COMPRIMENTO */
   width: 90%;
-  max-width: 620px;        /* antes: 480px → AGORA está largo como no design antigo */
+  max-width: 620px;
   margin: 0 auto;
 
   display: flex;
@@ -53,11 +49,10 @@
 
 .form-box form {
   width: 100%;
-  max-width: 620px;   /* permite crescer totalmente */
+  max-width: 620px;
   margin: 0 auto;
-  padding: 20px;         /* remove padding que estava a encolher */
+  padding: 20px;
 }
-
 
 /* LOGIN visível */
 .form-box.login {
@@ -73,7 +68,7 @@
   pointer-events: none;
 }
 
-/* Quando ativo → troca */
+/* Troca quando ativo */
 .auth-panel.active .form-box.login {
   transform: translateX(-100%);
   opacity: 0;
@@ -89,7 +84,6 @@
 /************************************
     TÍTULOS
 ************************************/
-
 .auth-panel h2 {
   font-size: 28px;
   margin-bottom: 25px;
@@ -99,7 +93,6 @@
 /************************************
     INPUTS
 ************************************/
-
 .input-box {
   position: relative;
   width: 100%;
@@ -149,24 +142,30 @@
 /************************************
     REMEMBER / FORGOT
 ************************************/
-
 .remember-forgot {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   width: 100%;
-  max-width: 620px;   /* igual ao .form-box */
-  margin: 5px auto 22px auto; /* espaço equilibrado */
-  padding: 0 4px; /* leve respiro lateral */
+  max-width: 620px;
+  margin: 5px auto 22px auto;
+  padding: 0 4px;
   font-size: 14px;
 }
 
+.remember-forgot a{
+  text-decoration: none;
+  color: white;
+}
+
+.remember-forgot a:hover{
+  text-decoration: underline;
+}
 
 /************************************
     BOTÕES
 ************************************/
-
 .btn {
   width: 100%;
   height: 48px;
@@ -188,7 +187,6 @@
 /************************************
     LINKS LOGIN / REGISTER
 ************************************/
-
 .login-register {
   font-size: 14.5px;
   font-weight: 500;
@@ -196,20 +194,22 @@
   margin-top: 25px;
 }
 
-.login-register a {
-  color: white;
+.login-register a,
+.login-register .Bold {
+  color: #e200ff !important;
   font-weight: 600;
+  transition: 0.2s ease-in-out;
   text-decoration: none;
 }
 
-.login-register a:hover {
+.login-register a:hover,
+.login-register .Bold:hover {
   text-decoration: underline;
 }
 
 /************************************
-    ERROS E ANIMAÇÕES
+    ERROS & ANIMAÇÕES
 ************************************/
-
 .checkbox-error {
   animation: shake 0.3s ease;
   border: 2px solid #ff4d4d;
@@ -240,6 +240,9 @@
   animation: shake 0.4s ease;
 }
 
+/************************************
+    CONFIRM PASSWORD POPUP
+************************************/
 .confirm-overlay {
   isolation: isolate;
   position: fixed;
@@ -299,7 +302,6 @@
 /************************************
     TOASTS
 ************************************/
-
 .toast {
   position: absolute;
   bottom: 25px;
@@ -312,7 +314,6 @@
   animation: slideUp 0.4s ease, fadeOut 0.4s ease 2.6s forwards;
   z-index: 10000;
   pointer-events: none;
-  backdrop-filter: none !important;
 }
 
 .toast.success { background: linear-gradient(135deg, #32d74b, #1b7e2b); }
@@ -328,12 +329,9 @@
   to { opacity: 0; transform: translateY(-10px); }
 }
 
-
-
 /************************************
     FIX AUTOFILL
 ************************************/
-
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -347,7 +345,6 @@ input:-webkit-autofill:active {
 /************************************
     RESPONSIVO
 ************************************/
-
 @media screen and (max-width: 900px) {
   .auth-panel {
     max-width: 100%;
