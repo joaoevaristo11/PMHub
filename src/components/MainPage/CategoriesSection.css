@@ -1,5 +1,4 @@
 :root {
-  /* Definir variáveis para cores e valores reutilizáveis */
   --primary-gradient: linear-gradient(135deg, #8d36d4, #c146c1);
   --hover-gradient: linear-gradient(135deg, #8B5CF6, #9D4EDD);
   --bg-gradient: linear-gradient(to bottom, #000000, #350837);
@@ -8,6 +7,10 @@
   --text-muted: #aaa9a9;
   --text-card: #ddd;
 }
+
+/* =============================
+   SEÇÃO PRINCIPAL
+============================= */
 
 .categories-section {
   background: var(--bg-gradient);
@@ -33,14 +36,22 @@
   margin-bottom: 60px;
 }
 
+/* =============================
+   GRID RESPONSIVA
+============================= */
+
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 5fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 40px;
 }
 
-/* Unificando os estilos de cards */
-.category-card, .categories-movies-card {
+/* =============================
+   CARDS BASE
+============================= */
+
+.category-card,
+.categories-movies-card {
   padding: 40px 30px;
   border-radius: 16px;
   text-align: center;
@@ -49,70 +60,78 @@
   position: relative;
   overflow: hidden;
   background-size: cover;
-  background-position: center;
+  background-position: center top;
   background-repeat: no-repeat;
   box-shadow: 0 10px 30px rgba(183, 26, 26, 1);
-
 }
 
-.category-card::before, .categories-movies-card::before {
+.category-card::before,
+.categories-movies-card::before {
   content: '';
   position: absolute;
-  inset: 0; /* Shorthand para top, right, bottom, left: 0 */
+  inset: 0;
   background: rgba(0, 0, 0, 0.4);
   z-index: 1;
 }
 
-.category-card > *, .categories-movies-card > * {
+.category-card > *,
+.categories-movies-card > * {
   position: relative;
   z-index: 2;
 }
 
+/* =============================
+   BACKGROUNDS DOS CARDS
+============================= */
+
 .categories-movies-card {
   background-image: url("/images/CategoriesCards/JohnSnow.jpg");
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
 }
 
-.books-card{
+.books-card {
   background-image: url("/images/CategoriesCards/nightreading.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
-.games-card{
+.games-card {
   background-image: url("/images/CategoriesCards/Ellie.jpg");
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
 }
-.category-card:hover, .categories-movies-card:hover {
+
+.category-card:hover,
+.categories-movies-card:hover {
   transform: translateY(-10px);
   border-color: var(--border-highlight);
-  box-shadow: 0 0 15px rgba(246, 7, 181, 0.8) ;
+  box-shadow: 0 0 15px rgba(246, 7, 181, 0.8);
 }
+
+/* =============================
+   CONTEÚDO DOS CARDS
+============================= */
 
 .category-icon {
   font-size: 48px;
   margin-bottom: 20px;
 }
 
-.category-card h3, .categories-movies-card h3 {
+.category-card h3,
+.categories-movies-card h3 {
   font-size: 24px;
   margin-bottom: 16px;
   color: var(--text-light);
 }
 
-.category-card p, .categories-movies-card p {
+.category-card p,
+.categories-movies-card p {
   color: var(--text-card);
   margin-bottom: 24px;
   line-height: 1.6;
 }
 
-/* Botões unificados */
-.category-button, .card-button {
+/* =============================
+   BOTÕES
+============================= */
+
+.category-button,
+.card-button {
   background: var(--primary-gradient);
   color: white;
   border: none;
@@ -124,7 +143,110 @@
   transition: all 0.3s ease;
 }
 
-.category-button:hover, .card-button:hover {
+.category-button:hover,
+.card-button:hover {
   background: var(--hover-gradient);
   transform: scale(1.05);
+}
+
+/* =============================
+   MEDIA QUERIES
+============================= */
+
+/* Tablets grandes */
+@media (max-width: 1024px) {
+  .categories-section-container h2 {
+    font-size: 34px;
+  }
+
+  .categories-section-container p {
+    font-size: 16px;
+  }
+
+  .category-card,
+  .categories-movies-card {
+    padding: 32px 24px;
+  }
+
+  .category-icon {
+    font-size: 42px;
+  }
+}
+
+/* Tablets / Telemóveis grandes */
+@media (max-width: 768px) {
+
+  .categories-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px;
+  }
+
+  .categories-section {
+    padding: 60px 0;
+  }
+
+  .categories-section-container h2 {
+    font-size: 30px;
+  }
+
+  .categories-section-container p {
+    font-size: 15px;
+    margin-bottom: 40px;
+  }
+
+  .category-card,
+  .categories-movies-card {
+    padding: 28px 20px;
+    border-radius: 14px;
+  }
+
+  .category-card h3 {
+    font-size: 20px;
+  }
+
+  .category-card p {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .category-button,
+  .card-button {
+    font-size: 15px;
+    padding: 10px 26px;
+  }
+}
+
+/* Smartphones pequenos (SE, minis) */
+@media (max-width: 480px) {
+
+  .categories-section-container h2 {
+    font-size: 26px;
+  }
+
+  .categories-section-container p {
+    font-size: 14px;
+  }
+
+  .category-card,
+  .categories-movies-card {
+    padding: 22px 16px;
+  }
+
+  .category-icon {
+    font-size: 38px;
+  }
+
+  .category-card h3 {
+    font-size: 18px;
+  }
+
+  .category-card p {
+    font-size: 14px;
+  }
+
+  .category-button,
+  .card-button {
+    padding: 10px 22px;
+    font-size: 14px;
+  }
 }

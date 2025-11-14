@@ -1,7 +1,14 @@
+/* =============================
+   VARIÁVEIS
+============================= */
 .about-section {
   background: linear-gradient(to bottom, #350837, #000000ff);
   padding: 80px 0;
 }
+
+/* =============================
+   LAYOUT PRINCIPAL
+============================= */
 
 .about-contender {
   max-width: 1200px;
@@ -10,13 +17,14 @@
   display: flex;
   gap: 40px;
   align-items: center;
-  flex-wrap: wrap; /* Permite quebra em telas menores */
+  flex-wrap: wrap;
 }
 
 .about-text {
   flex: 1;
-  min-width: 300px; /* Garante um tamanho mínimo */
-  max-width: 60%; /* Limita o tamanho máximo */
+  width: 100%;
+  max-width: 600px; /* <- FIX para zoom in/out */
+  min-width: 300px;
 }
 
 .about-text h2 {
@@ -38,6 +46,10 @@
   line-height: 1.7;
   margin-bottom: 30px;
 }
+
+/* =============================
+   FEATURES LIST
+============================= */
 
 .about-features {
   display: flex;
@@ -65,18 +77,145 @@
   color: #EEEEEE;
 }
 
+/* =============================
+   IMAGEM
+============================= */
+
 .about-image {
   flex: 1;
-  min-width: 300px; /* Tamanho mínimo */
+  min-width: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .about-image img {
-  width: 100%; /* Usa 100% da largura disponível */
+  width: 100%;
   height: auto;
   border-radius: 12px;
-  max-height: 1000px; /* Limita a altura máxima */
-  object-fit: contain; /* Mantém a proporção da imagem */
+  max-height: 1000px;
+  object-fit: contain;
+}
+
+/* =============================
+   MEDIA QUERIES
+============================= */
+
+/* Tablets grandes */
+@media (max-width: 1024px) {
+
+  .about-section {
+    padding: 60px 0;
+  }
+
+  .about-text h2 {
+    font-size: 34px;
+  }
+
+  .about-subtitle {
+    font-size: 18px;
+  }
+
+  .about-description {
+    font-size: 15px;
+  }
+
+  .feature {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .feature span:last-child {
+    font-size: 15px;
+  }
+
+  .about-image img {
+    max-height: 600px;
+  }
+}
+
+/* Tablets / Telemóveis grandes */
+@media (max-width: 768px) {
+
+  .about-contender {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .about-text {
+    max-width: 100%;
+  }
+
+  .about-text h2 {
+    font-size: 30px;
+  }
+
+  .about-subtitle {
+    font-size: 17px;
+  }
+
+  .about-description {
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .about-features {
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .feature {
+    justify-content: center;
+    padding: 14px 10px;
+    border-left: none;
+    border-radius: 10px;
+    border-top: 3px solid #9D4EDD;
+  }
+
+  .feature-icon {
+    font-size: 22px;
+  }
+
+  .about-image img {
+    max-height: 450px;
+    width: 85%;
+  }
+}
+
+/* Smartphones pequenos (SE, minis) */
+@media (max-width: 480px) {
+
+  .about-section {
+    padding: 50px 0;
+  }
+
+  .about-text h2 {
+    font-size: 26px;
+  }
+
+  .about-subtitle {
+    font-size: 16px;
+  }
+
+  .about-description {
+    font-size: 14px;
+  }
+
+  .feature span:last-child {
+    font-size: 14px;
+  }
+
+  .feature-icon {
+    font-size: 20px;
+  }
+
+  .feature {
+    padding: 12px 8px;
+    gap: 12px;
+  }
+
+  .about-image img {
+    display: none;
+  }
 }

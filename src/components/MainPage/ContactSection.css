@@ -1,3 +1,7 @@
+/* =============================
+   CONTACT SECTION
+============================= */
+
 .contact-section {
   background: linear-gradient(to bottom, #000000ff, #1f022eff);
   padding: 80px 0;
@@ -7,11 +11,20 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: start;
+
+  /* 🔥 SUPER IMPORTANTE PARA ZOOM-IN */
+  width: 100%;
+  min-width: 300px;
 }
+
+/* =============================
+   TEXT SIDE
+============================= */
 
 .contact-text h2 {
   font-size: 42px;
@@ -32,6 +45,10 @@
   line-height: 1.7;
   margin-bottom: 40px;
 }
+
+/* =============================
+   CONTACT LINKS
+============================= */
 
 .contact-info {
   display: flex;
@@ -55,8 +72,14 @@
   align-items: center;
   gap: 16px;
   width: 100%;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: 0.4s ease;
+  border-radius: 12px;
 }
 
+/* ICONS */
 .contact-icon {
   font-size: 24px;
   display: flex;
@@ -69,6 +92,7 @@
   filter: brightness(0) invert(1);
 }
 
+/* TEXT */
 .contact-item h4 {
   color: #fff;
   margin-bottom: 4px;
@@ -80,11 +104,50 @@
   font-size: 14px;
 }
 
+/* MASK ANIMATION */
+.contact-item a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 101%;
+  height: 100%;
+
+  background: linear-gradient(135deg, #060606ff, #fc08f4ff);
+  -webkit-mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
+  mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
+
+  -webkit-mask-size: 2300% 100%;
+  mask-size: 2300% 100%;
+
+  z-index: 1;
+  animation: ani2 0.7s steps(22) forwards;
+  pointer-events: none;
+}
+
+.contact-item a:hover::before {
+  animation: ani 0.7s steps(22) forwards;
+}
+
+.contact-item * {
+  z-index: 2;
+  position: relative;
+}
+
+/* =============================
+   FORM SECTION
+============================= */
+
 .contact-form {
   padding: 40px;
   border-radius: 16px;
   border: 1px solid #333;
-  box-shadow: rgba(248, 5, 5, 0.25) 0px 14px 20px, rgba(246, 9, 242, 0.22) 0px 10px 20px;
+  box-shadow: rgba(248, 5, 5, 0.25) 0px 14px 20px,
+              rgba(246, 9, 242, 0.22) 0px 10px 20px;
+
+  /* 🔥 Importante para zoom */
+  width: 100%;
+  min-width: 300px;
 }
 
 .form-sec {
@@ -124,49 +187,9 @@
 
 .contact-button:hover {
   background: radial-gradient(circle at center, #f04eff, #9612a7ff);
-  box-shadow: 0 0 18px rgba(228, 25, 255, 0.5), 0 0 32px rgba(157, 78, 221, 0.4);
+  box-shadow: 0 0 18px rgba(228, 25, 255, 0.5),
+              0 0 32px rgba(157, 78, 221, 0.4);
   transform: translateY(-3px);
-}
-
-
-.contact-item a {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px;
-  text-decoration: none;
-  color: inherit;
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  transition: 0.4s ease;
-}
-
-.contact-item a::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 101%;
-  height: 100%;
-background: linear-gradient(135deg, #060606ff, #fc08f4ff);
-  -webkit-mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
-  mask: url("https://raw.githubusercontent.com/robin-dela/css-mask-animation/master/img/nature-sprite.png");
-  -webkit-mask-size: 2300% 100%;
-  mask-size: 2300% 100%;
-  z-index: 1;
-  animation: ani2 0.7s steps(22) forwards;
-  transition: all 0.5s;
-  pointer-events: none;
-}
-
-.contact-item a:hover::before {
-  animation: ani 0.7s steps(22) forwards;
-}
-
-.contact-item * {
-  z-index: 2;
-  position: relative;
 }
 
 .status-message {
@@ -179,24 +202,103 @@ background: linear-gradient(135deg, #060606ff, #fc08f4ff);
 }
 
 
-@keyframes ani {
-  from {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
+/* =============================
+   RESPONSIIVIDADE
+============================= */
+
+/* Tablets grandes */
+@media (max-width: 1024px) {
+
+  .contact-text h2 {
+    font-size: 34px;
   }
-  to {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
+
+  .contact-subtittle {
+    font-size: 18px;
+  }
+
+  .contact-description {
+    font-size: 15px;
+  }
+
+  .contact-form {
+    padding: 32px;
   }
 }
 
+/* Tablets / Telemóveis grandes */
+@media (max-width: 768px) {
+
+  .contact-contender {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .contact-info {
+    align-items: center;
+  }
+
+  .contact-item {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .contact-form {
+    width: 100%;
+    padding: 28px;
+  }
+
+  .contact-text h2 {
+    font-size: 30px;
+  }
+}
+
+/* Smartphones pequenos */
+@media (max-width: 480px) {
+
+  .contact-section {
+    padding: 60px 0;
+  }
+
+  .contact-text h2 {
+    font-size: 26px;
+  }
+
+  .contact-subtittle {
+    font-size: 16px;
+  }
+
+  .contact-description {
+    font-size: 14px;
+  }
+
+  .contact-form {
+    padding: 22px;
+  }
+
+  .form-sec input,
+  .form-sec textarea {
+    padding: 14px;
+    font-size: 15px;
+  }
+
+  .contact-button {
+    font-size: 15px;
+    padding: 14px;
+  }
+}
+
+/* =============================
+   MASK ANIMATION KEYFRAMES
+============================= */
+
+@keyframes ani {
+  from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  to { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+}
+
 @keyframes ani2 {
-  from {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-  }
-  to {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
-  }
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to { -webkit-mask-position: 0 0; mask-position: 0 0; }
 }
