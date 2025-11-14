@@ -1,141 +1,64 @@
 /* ===== EFEITO PARALLAX ===== */
 .reviews-parallax {
-  min-height: 100vh;
+  min-height: min-content;
   background-size: cover;
-  background-position: center;
-  background-attachment: fixed; /* ❤️ Parallax */
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+
+  padding-top: clamp(30px, 12vh, 140px);
+  padding-bottom: clamp(30px, 12vh, 140px);
+
   overflow: hidden;
 }
 
-/* Overlay escuro por cima da imagem */
+/* Overlay escuro */
 .reviews-parallax::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.5),
-    rgba(0, 0, 0, 0.75)
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.8)
   );
   z-index: 0;
 }
 
 /* ===== CONTEÚDO PRINCIPAL ===== */
 .testimonals-contender {
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 80px 20px;
+  padding: 0 20px;
   text-align: center;
   position: relative;
-  z-index: 1; /* fica acima do overlay */
+  z-index: 2;
 }
 
 .testimonals-title {
-  font-size: 42px;
+  font-size: clamp(26px, 4vw, 42px);
   font-weight: 700;
-  color: #ffffff;
+  margin-bottom: clamp(20px, 4vh, 50px);
+  margin-top: clamp(10px, 3vh, 40px);
+  color: #fff;
   text-shadow: 0 0 10px rgba(249, 7, 249, 0.5);
 }
 
-/* ===== GRELHA DE REVIEWS ===== */
-.testimonals-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  margin-top: 2rem;
-}
-
-/* ===== CARD INDIVIDUAL ===== */
-.testimonals-card {
-  padding: 40px 30px;
-  text-align: center;
-  position: relative;
-}
-
-/* ===== AVATAR ===== */
-.testimonals-card .avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4),
-    0 0 15px rgba(138, 43, 226, 0.6);
-  transform: translateY(-10px);
-  transition: all 0.3s ease-in-out;
-  border: 1px solid black;
-  object-fit: cover;
-  margin-top: 40px;
-}
-
-.testimonals-card .avatar:hover {
-  transform: translateY(-15px) scale(1.2);
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5),
-    0 0 25px rgba(138, 43, 226, 0.8);
-}
-
-/* ===== INFO DO UTILIZADOR ===== */
-.testimonals-card .review-header .user-name {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-  color: #fff;
-}
-
-.testimonals-card .review-header .user-rating {
-  font-size: 1rem;
-  color: #ffd700;
-  margin-bottom: 1rem;
-}
-
-.testimonals-card .review-header .review-meta {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-/* ===== DESCRIÇÃO ===== */
-.testimonals-card .review-description {
-  font-size: 1rem;
-  color: #e6e6e6;
-  line-height: 1.5;
-  opacity: 0.95;
-}
-
-/* ===== BOTÃO ===== */
-.see-all-reviews {
-  text-align: center;
-  margin-top: 3rem;
-}
-
-.see-all-reviews button {
-  background: linear-gradient(135deg, #da0cf9, #370d4d);
-  color: #fff;
-  border: none;
-  padding: 0.9rem 1.8rem;
-  border-radius: 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.see-all-reviews button:hover {
-  transform: scale(1.15);
-}
-
-/* === SWIPER CUSTOM === */
+/* ===== SWIPER ===== */
 .testimonals-swiper {
   width: 100%;
-  max-width: 700px;
-  margin: 0 auto 2rem;
+  max-width: clamp(280px, 85vw, 550px);
+  margin: 0 auto;
+  padding-bottom: clamp(10px, 3vh, 40px);
 }
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: #e200ff; /* cor das setas */
+  color: #e200ff;
   transition: 0.3s ease;
 }
 
@@ -145,49 +68,110 @@
   transform: scale(1.2);
 }
 
-.swiper-pagination-bullet {
-  opacity: 0.6;
+/* ===== CARD INDIVIDUAL ===== */
+.testimonals-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+
+  padding: clamp(20px, 4vw, 40px) clamp(15px, 3vw, 25px);
+  width: 100%;
+  max-width: clamp(280px, 85vw, 550px);
+  margin: 0 auto;
 }
 
-.swiper-pagination-bullet-active {
-  background: transparent;
-  opacity: 1;
+/* ===== AVATAR ===== */
+.testimonals-card .avatar {
+  width: clamp(60px, 12vw, 100px);
+  height: clamp(60px, 12vw, 100px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid black;
+
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4),
+              0 0 15px rgba(138,43,226,0.6);
+
+  transform: translateY(-10px);
+  transition: 0.3s ease-in-out;
 }
 
+.testimonals-card .avatar:hover {
+  transform: translateY(-15px) scale(1.2);
+}
+
+/* ===== INFO DO UTILIZADOR ===== */
+.testimonals-card .review-header .user-name {
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #fff;
+}
+
+.testimonals-card .review-header .user-rating {
+  font-size: clamp(14px, 2vw, 18px);
+  color: #ffd700;
+  margin-bottom: 1rem;
+}
+
+.testimonals-card .review-header .review-meta {
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #e200ff;
+}
+
+/* ===== DESCRIÇÃO ===== */
+.testimonals-card .review-description {
+  font-size: clamp(14px, 2vw, 16px);
+  color: #e6e6e6;
+  line-height: 1.5;
+  opacity: 0.95;
+  padding: 0 8px;
+}
+
+/* ===== FORMULÁRIO ===== */
 .add-review-form {
   margin-top: 3rem;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
   border-radius: 12px;
-  padding: 2rem;
+
+  width: 100%;
+  max-width: clamp(280px, 85vw, 550px);
+  margin-inline: auto;
+  padding: clamp(20px, 4vw, 32px);
   color: white;
-  backdrop-filter: blur(8px);
 }
 
 .add-review-form h3 {
-  margin-bottom: 1rem;
+  margin-bottom: clamp(12px, 2.5vw, 20px);
   color: #e200ff;
+  font-size: clamp(16px, 3vw, 22px);
 }
 
 .add-review-form input,
 .add-review-form textarea,
 .add-review-form select {
   width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.7rem;
+  margin-bottom: clamp(10px, 2vw, 16px);
+  padding: clamp(8px, 1.5vw, 14px);
   border-radius: 8px;
   border: none;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.15);
   color: white;
+  font-size: clamp(14px, 2.2vw, 18px);
 }
 
 .add-review-form button {
+  width: 100%;
   background: linear-gradient(135deg, #da0cf9, #370d4d);
   color: #fff;
-  padding: 0.7rem 1.5rem;
+  padding: clamp(10px, 2vw, 16px);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.3s ease;
+  font-size: clamp(14px, 2.2vw, 18px);
 }
 
 .add-review-form button:hover {
@@ -197,25 +181,36 @@
 .status-message {
   margin-top: 0.5rem;
   color: #e200ff;
+  font-size: clamp(14px, 2vw, 16px);
 }
 
+/* ===== BOTÃO SEE ALL ===== */
+.see-all-reviews {
+  text-align: center;
+  margin-top: 3rem;
+}
 
-/* ===== RESPONSIVIDADE ===== */
+.see-all-reviews button {
+  background: linear-gradient(135deg, #da0cf9, #370d4d);
+  color: #fff;
+  border: none;
+  padding: clamp(10px, 2vw, 16px) clamp(20px, 4vw, 32px);
+  border-radius: 2rem;
+  font-size: clamp(14px, 2.2vw, 18px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.see-all-reviews button:hover {
+  transform: scale(1.15);
+}
+
+/* ===== MOBILE FIX ===== */
 @media (max-width: 768px) {
-  .testimonals-title {
-    font-size: 32px;
-  }
-
-  .testimonals-card {
-    padding: 30px 20px;
-  }
-
-  .testimonals-grid {
-    gap: 25px;
-  }
-
-  .testimonals-card .avatar {
-    width: 80px;
-    height: 80px;
+  .reviews-parallax {
+    background-attachment: scroll !important;
+    padding-top: clamp(20px, 6vh, 40px);
+    padding-bottom: clamp(20px, 6vh, 40px);
   }
 }

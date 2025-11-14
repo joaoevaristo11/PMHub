@@ -311,6 +311,7 @@ body {
     padding: 40px 25px;
     gap: 40px;
     margin-top: 140px;
+    top: 100px;
   }
 
   .hero-left,
@@ -338,3 +339,62 @@ body {
   .logo-img { width: 110px; }
   .hero-text h2 { font-size: 28px; }
 }
+
+/* =========================================
+   MOBILE FIX — Blur total no telemóvel
+========================================= */
+/* =========================================
+   MOBILE FIX — Blur total no telemóvel
+========================================= */
+@media (max-width: 768px) {
+
+  /* Hero sem blur global */
+  .hero-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    padding: 40px 20px !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Blur só da parte inferior */
+  .hero-blur-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    top: 50%;              /* 🔥 só da metade para baixo */
+    height: 50%;           /* cobre apenas a parte inferior */
+
+    backdrop-filter: blur(22px);
+    background: rgba(0,0,0,0.50); /* escurece só a zona do form */
+
+    z-index: 1 !important;
+    pointer-events: none;
+  }
+
+  /* Slides atrás deste blur */
+  .hero-slides,
+  .hero-slide {
+    z-index: 0 !important;
+  }
+
+  /* Conteúdo sempre acima do blur */
+  .hero-left,
+  .hero-right {
+    position: relative;
+    z-index: 3 !important;
+  }
+
+  /* Form centrado */
+  .hero-right {
+    width: 100%;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    display: flex;
+    justify-content: center;
+  }
+}
+
