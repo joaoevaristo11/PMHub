@@ -19,25 +19,28 @@ export const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      verified: false
+      verified: false,
     })
 
+    // token de verificação para email
     const token = generateVerificationToken(newUser._id)
     const verifyUrl = createVerificationLink(token)
 
     const emailSent = await sendVerificationEmail(name, email, verifyUrl)
 
     if (!emailSent)
-      return res.status(500).json({ message: "Failed to send verification email" })
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification email" })
 
     return res
       .status(201)
       .json({ message: "User registered successfully! Please check your email." })
   } catch (err) {
+    console.error("Signup error:", err)
     res.status(500).json({ message: "Signup error", error: err.message })
   }
 }
-
 
 // ---------- VERIFICAR EMAIL ----------
 export const verifyEmail = async (req, res) => {
@@ -46,17 +49,27 @@ export const verifyEmail = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
     const user = await User.findById(decoded.id)
-    if (!user) return res.status(404).json({status: "error", message: "User not found ❌"})
+    if (!user)
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found ❌" })
 
     if (user.verified)
-      return res.status(200).json({status: "ok", message:"Email already verified ✅"})
+      return res
+        .status(200)
+        .json({ status: "ok", message: "Email already verified ✅" })
 
     user.verified = true
     await user.save()
 
-    res.status(200).json({status: "ok", message:"Email verified successfully ✅"})
+    res
+      .status(200)
+      .json({ status: "ok", message: "Email verified successfully ✅" })
   } catch (err) {
-    res.status(400).json({status: "error", message:"Invalid or expired token ❌"})
+    console.error("Verify email error:", err)
+    res
+      .status(400)
+      .json({ status: "error", message: "Invalid or expired token ❌" })
   }
 }
 
@@ -70,32 +83,39 @@ export const login = async (req, res) => {
       return res.status(404).json({ message: "User not found" })
 
     if (!existingUser.verified)
-      return res.status(401).json({ message: "Please verify your email before logging in." })
+      return res
+        .status(401)
+        .json({ message: "Please verify your email before logging in." })
 
     const validPassword = await bcrypt.compare(password, existingUser.password)
     if (!validPassword)
       return res.status(401).json({ message: "Invalid password" })
 
     let isFirstLogin = false
-    if (existingUser.firstLogin === undefined || existingUser.firstLogin === true) {
+    if (
+      existingUser.firstLogin === undefined ||
+      existingUser.firstLogin === true
+    ) {
       isFirstLogin = true
       existingUser.firstLogin = false
     }
 
-    const accessToken = generateVerificationToken(existingUser._id);
-    const refreshToken = createRefreshToken(existingUser._id);
+    // ⚠️ Aqui estás a reutilizar generateVerificationToken como "access token"
+    const accessToken = generateVerificationToken(existingUser._id)
+    const refreshToken = createRefreshToken(existingUser._id)
 
-    if(rememberMe){
+    if (rememberMe) {
       existingUser.refreshToken = refreshToken
-      existingUser.refreshTokenExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 dias
-    }else{
+      existingUser.refreshTokenExpires = new Date(
+        Date.now() + 30 * 24 * 60 * 60 * 1000
+      ) // 30 dias
+    } else {
       // se não tiver rememberMe, limpamos qualquer refreshToken antigo
-      existingUser.refreshToken = undefined;
-      existingUser.refreshTokenExpires = undefined;
+      existingUser.refreshToken = undefined
+      existingUser.refreshTokenExpires = undefined
     }
 
-    await existingUser.save();
-
+    await existingUser.save()
 
     return res.status(200).json({
       message: isFirstLogin
@@ -109,10 +129,10 @@ export const login = async (req, res) => {
         name: existingUser.name,
         email: existingUser.email,
       },
-    });
+    })
   } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Login error", error: err.message });
+    console.error("Login error:", err)
+    res.status(500).json({ message: "Login error", error: err.message })
   }
 }
 
@@ -125,10 +145,14 @@ export const getMe = async (req, res) => {
 
     res.status(200).json({ user })
   } catch (err) {
-    res.status(500).json({ message: "Error fetching user", error: err.message })
+    console.error("GetMe error:", err)
+    res
+      .status(500)
+      .json({ message: "Error fetching user", error: err.message })
   }
 }
 
+// ---------- REENVIAR EMAIL DE VERIFICAÇÃO ----------
 export const resendVerification = async (req, res) => {
   try {
     const { email } = req.body
@@ -144,61 +168,79 @@ export const resendVerification = async (req, res) => {
     const emailSent = await sendVerificationEmail(user.name, email, verifyUrl)
 
     if (!emailSent)
-      return res.status(500).json({ message: "Failed to send verification email" })
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification email" })
 
     res.json({ message: "Verification email resent successfully!" })
   } catch (err) {
-    console.log(err)
+    console.error("Resend verification error:", err)
     res.status(500).json({ message: "Server error" })
   }
 }
 
-export const refreshAccessToken = async (req, res)=>{
-  try{
-    const{refreshToken} = req.body
-    if(!refreshAccessToken){
-      return res.status(401).json({message: "Missing refresh token"})
+// ---------- REFRESH ACCESS TOKEN ----------
+export const refreshAccessToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body
+
+    // BUG que tinhas: estavas a verificar "refreshAccessToken" em vez de "refreshToken"
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Missing refresh token" })
     }
 
     let decoded
-    try{
+    try {
       decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
-    }catch(err){
-      return res.status(401).json({message:"Invalid or expired refresh token"})
+    } catch (err) {
+      return res
+        .status(401)
+        .json({ message: "Invalid or expired refresh token" })
     }
 
     const user = await User.findById(decoded.id)
-    if(!user){
-      return res.status(401).json({message: "User not found"})
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
     }
 
-    if(!user.refreshToken || user.refreshToken!==refreshToken || !user.refreshTokenExpires || 
-      user.refreshTokenExpires.getTime()<Date.now()){
-        return res.status(401).json({message: "Refresh token not valid anymore"})
+    // validar se este refreshToken ainda é o atual e não expirou
+    if (
+      !user.refreshToken ||
+      user.refreshToken !== refreshToken ||
+      !user.refreshTokenExpires ||
+      user.refreshTokenExpires.getTime() < Date.now()
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Refresh token not valid anymore" })
     }
 
-    const newAccessToken = generateVerificationToken(user.id)
-    return res.status(200).json({token: newAccessToken})
-  }catch(err){
-    console.error("Refresh error:", err);
-    res.status(500).json({ message: "Error refreshing token" });
+    // novo access token
+    const newAccessToken = generateVerificationToken(user._id)
+
+    return res.status(200).json({ token: newAccessToken })
+  } catch (err) {
+    console.error("Refresh error:", err)
+    res
+      .status(500)
+      .json({ message: "Error refreshing token", error: err.message })
   }
 }
 
-
+// ---------- LOGOUT ----------
 export const logout = async (req, res) => {
   try {
-    const { userId } = req; // vindo do authMiddleware
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const { userId } = req // vindo do authMiddleware
+    const user = await User.findById(userId)
+    if (!user) return res.status(404).json({ message: "User not found" })
 
-    user.refreshToken = undefined;
-    user.refreshTokenExpires = undefined;
-    await user.save();
+    user.refreshToken = undefined
+    user.refreshTokenExpires = undefined
+    await user.save()
 
-    res.json({ message: "Logged out successfully" });
+    res.json({ message: "Logged out successfully" })
   } catch (err) {
-    res.status(500).json({ message: "Logout error" });
+    console.error("Logout error:", err)
+    res.status(500).json({ message: "Logout error" })
   }
-};
-
+}
