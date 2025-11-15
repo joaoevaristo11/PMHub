@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import "./Authentication.css"
 import { createPortal } from "react-dom"
+import { div, p } from "framer-motion/client"
 
 const API_URL = "https://justtakes.onrender.com/api/auth"
 
@@ -15,14 +16,13 @@ function Authentication() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState("")
-
-  // 🔥 NOVO — Email guardado do registo
+  const [canResend, setCanResend] = useState(false)
+  const [counter, setCounter] = useState(30) // segundos para voltar a enviar
+  const [showResendSection, setShowResendSection] = useState(false)
   const [lastRegisteredEmail, setLastRegisteredEmail] = useState("")
 
-  // resend system
-  const [canResend, setCanResend] = useState(false)
-  const [counter, setCounter] = useState(30)
-  const [showResendSection, setShowResendSection] = useState(false)
+
+
 
   /* --------------------------- AUTH CHECK --------------------------- */
   useEffect(() => {
@@ -63,7 +63,6 @@ function Authentication() {
     setShowConfirmPassword(true)
   }
 
-
   const confirmSignup = async () => {
     if (confirmPassword !== form.password) {
       showToast("Passwords do not match!", "error")
@@ -83,7 +82,6 @@ function Authentication() {
         return
       }
 
-      // 🔥 Guardar email ANTES de limpar o formulário
       setLastRegisteredEmail(form.email)
 
       showToast("Account created successfully!", "success")
@@ -93,25 +91,22 @@ function Authentication() {
       setIsRegister(false)
       setShowResendSection(true)
 
-      // limpar form
       setForm({ name: "", email: "", password: "" })
 
-      // iniciar cooldown
       setCanResend(false)
       setCounter(30)
 
-      const interval = setInterval(() => {
-        setCounter(prev => {
-          if (prev === 1) {
+      const interval = setInterval(()=>{
+        setCounter(prev=>{
+          if(prev==1){
             clearInterval(interval)
             setCanResend(true)
             return 0
           }
           return prev - 1
         })
-      }, 1000)
+      },1000)
 
-      // mensagem de verificação
       setTimeout(() => {
         showToast(
           "Please verify your email before signing in. 📧",
@@ -120,43 +115,8 @@ function Authentication() {
         )
       }, 1500)
 
-    } catch (err) {
-      showToast("Server error — please try again later.", "error")
-    }
-  }
+    setForm({ name: "", email: "", password: "" })
 
-  /* --------------------------- RESEND EMAIL --------------------------- */
-  const handleResend = async () => {
-    try {
-      const res = await fetch(`${API_URL}/resend-verification`, {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ email: lastRegisteredEmail })
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        showToast(data.message || "Failed to resend email.", "error")
-        return
-      }
-
-      showToast("Verification email resent! 📧", "success")
-
-      // restart cooldown
-      setCanResend(false)
-      setCounter(30)
-
-      const interval = setInterval(() => {
-        setCounter(prev => {
-          if (prev === 1) {
-            clearInterval(interval)
-            setCanResend(true)
-            return 0
-          }
-          return prev - 1
-        })
-      }, 1000)
 
     } catch (err) {
       showToast("Server error — please try again later.", "error")
@@ -214,11 +174,94 @@ function Authentication() {
     showToast("You have logged out.", "info")
   }
 
-  /* --------------------------- LOGIN/REGISTER PANEL --------------------------- */
+  /* --------------------------- LOGGED IN VIEW --------------------------- */
+  if (loggedInUser) {
+    return (
+      <div className="welcome-message">
+        <h2>
+          {loggedInUser.firstLogin ? (
+            <>
+              Welcome, <span>{loggedInUser.name}</span>!
+            </>
+          ) : (
+            <>
+              Welcome back, <span>{loggedInUser.name}</span>!
+            </>
+          )}
+        </h2>
+        <p>
+          {loggedInUser.firstLogin
+            ? "Your account is ready — explore PMHub 🎉"
+            : "We're happy to see you again 💫"}
+        </p>
+        <button className="btn logout-btn" onClick={handleLogout}>
+          Log Out
+        </button>
+      </div>
+    )
+  }
+
+  const handleResend = async ()=>{
+    try{
+      const res = await fetch(`${API_URL}/resend-verification`,{
+        method: "POST",
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify({ email: lastRegisteredEmail})
+      })
+
+      const data = await res.json()
+
+      if(!res.ok){
+        showToast(data.message || "Failed to resend email.", "error")
+        return
+      }
+      
+      showToast("Verification email resent! 📧", "success")
+
+      setCanResend(false)
+      setCounter(30)
+
+      const interval = setInterval(()=>{
+        setCounter(prev=>{
+          if(prev==1){
+            clearInterval(interval)
+            setCanResend(true)
+            return 0
+          }
+          return prev-1
+        })
+      }, 1000)
+    }catch(err){
+      showToast("Server error — please try again later.", "error")
+    }
+  }
+
+  const handleEnterConfirm = (e)=>{
+    if(e.key=="Enter"){
+      e.preventDefault()
+      confirmSignup()
+    }
+  }
+
+  const handleEnterSignUp = (e)=>{
+    if(e.key=="Enter"){
+      e.preventDefault()
+      handleSignup(e)
+    }
+  }
+
+    const handleEnterSignIn = (e)=>{
+    if(e.key=="Enter"){
+      e.preventDefault()
+      handleSignIn(e)
+    }
+  }
+
+
+  /* --------------------------- LOGIN / REGISTER PANEL --------------------------- */
   return (
     <div className={`auth-panel ${isRegister ? "active" : ""}`}>
-
-      {/* LOGIN */}
+      {/* ---------- Sign In ---------- */}
       <div className={`form-box login ${loginError ? "shake" : ""}`}>
         <form onSubmit={handleSignIn}>
           <h2>Sign In</h2>
@@ -241,10 +284,15 @@ function Authentication() {
             <span
               className="icon"
               onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: "pointer" }}
             >
               <img
-                src={showPassword ? "/images/cadeado-aberto.png" : "/images/cadeado.png"}
-                alt="toggle password"
+                src={
+                  showPassword
+                    ? "/images/cadeado-aberto.png"
+                    : "/images/cadeado.png"
+                }
+                alt="toggle password visibility"
               />
             </span>
             <input
@@ -253,6 +301,7 @@ function Authentication() {
               value={form.password}
               onChange={handleChange}
               required
+              onKeyDown={handleEnterSignIn}
             />
             <label>Password</label>
           </div>
@@ -269,20 +318,16 @@ function Authentication() {
             <a href="#">Forgot password?</a>
           </div>
 
-          <button type="submit" className="btn">Sign In</button>
+          <button type="submit" className="btn">
+            Sign In
+          </button>
 
-          {/* RESEND EMAIL SECTION */}
           {showResendSection && (
-            <div className="resend-area">
+            <div className = "resend-area">
               {!canResend ? (
-                <p>
-                  Didn’t receive the verification email?  
-                  Resend in <strong>{counter}s</strong>
-                </p>
-              ) : (
-                <button className="btn resend-btn" onClick={handleResend}>
-                  Resend Verification Email
-                </button>
+                <p>Didn't receive the verification email? Resend in <strong>{counter}s</strong></p>
+              ):(
+                <button className = "btn resend-btn" onClick={handleResend}>Resend Verification Email</button>
               )}
             </div>
           )}
@@ -291,14 +336,15 @@ function Authentication() {
             <p>
               Don't have an account?
               <a href="#" className="Bold" onClick={() => setIsRegister(true)}>
-                {" "}Sign up
+                {" "}
+                Sign up
               </a>
             </p>
           </div>
         </form>
       </div>
 
-      {/* SIGN UP */}
+      {/* ---------- Sign Up ---------- */}
       <div className="form-box register">
         <form>
           <h2>Sign Up</h2>
@@ -332,8 +378,19 @@ function Authentication() {
           </div>
 
           <div className="input-box">
-            <span className="icon" onClick={() => setShowPassword(!showPassword)}>
-              <img src={showPassword ? "/images/cadeado-aberto.png" : "/images/cadeado.png"} />
+            <span
+              className="icon"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: "pointer" }}
+            >
+              <img
+                src={
+                  showPassword
+                    ? "/images/cadeado-aberto.png"
+                    : "/images/cadeado.png"
+                }
+                alt="toggle password visibility"
+              />
             </span>
             <input
               type={showPassword ? "text" : "password"}
@@ -341,6 +398,7 @@ function Authentication() {
               value={form.password}
               onChange={handleChange}
               required
+              onKeyDown={handleEnterSignUp}
             />
             <label>Password</label>
           </div>
@@ -356,20 +414,23 @@ function Authentication() {
             </label>
           </div>
 
-          <button type="button" className="btn" onClick={handleSignup}>
+          <button type="button" className="btn" onClick={handleSignup} >
             Sign Up
           </button>
 
           <div className="login-register">
             <p>
               Already have an account?
-              <a href="#" onClick={() => setIsRegister(false)}> Sign In</a>
+              <a href="#" onClick={() => setIsRegister(false)}>
+                {" "}
+                Sign In
+              </a>
             </p>
           </div>
         </form>
       </div>
 
-      {/* CONFIRM PASSWORD POPUP */}
+      {/* ---------- Confirm Password Popup ---------- */}
       {showConfirmPassword &&
         createPortal(
           <div className="confirm-overlay">
@@ -381,10 +442,11 @@ function Authentication() {
                 placeholder="Re-enter password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onKeyDown={handleEnterConfirm}
               />
 
               <div className="confirm-actions">
-                <button className="btn" onClick={confirmSignup}>
+                <button className="btn" onClick={confirmSignup} >
                   Confirm
                 </button>
                 <button
@@ -399,7 +461,7 @@ function Authentication() {
           document.body
         )}
 
-      {/* TOAST */}
+      {/* ---------- Toast ---------- */}
       {toast.message &&
         createPortal(
           <div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>
