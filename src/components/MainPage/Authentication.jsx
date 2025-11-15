@@ -97,72 +97,70 @@ function Authentication() {
     setForm({ ...form, [e.target.name]: e.target.value })
 
   /* --------------------------- SIGNUP --------------------------- */
-  const handleSignup = (e) => {
-    e.preventDefault()
-    if (!agreed)
-      return showToast("Please agree to the terms & conditions.", "error")
-    if (form.password.length < 6)
-      return showToast("Password must have at least 6 characters.", "error")
-
-    setShowConfirmPassword(true)
+const confirmSignup = async () => {
+  if (confirmPassword !== form.password) {
+    showToast("Passwords do not match!", "error")
+    return
   }
 
-  const confirmSignup = async () => {
-    if (confirmPassword !== form.password) {
-      showToast("Passwords do not match!", "error")
+  try {
+    const res = await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    })
+
+    const data = await res.json()
+    if (!res.ok) {
+      showToast(data.message || "Registration failed.", "error")
       return
     }
 
-    try {
-      const res = await fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+    setLastRegisteredEmail(form.email)
+
+    showToast("Account created successfully!", "success")
+
+    // 🔥 FECHAR O POPUP PRIMEIRO
+    setShowConfirmPassword(false)
+
+    setConfirmPassword("")
+    setAgreed(false)
+    setIsRegister(false)
+
+    // 🔥 SÓ MOSTRAR RESEND SECTION DEPOIS
+    setShowResendSection(true)
+
+    // 🔥 INICIAR COOLDOWN
+    setCanResend(false)
+    setCounter(30)
+
+    const interval = setInterval(() => {
+      setCounter(prev => {
+        if (prev === 1) {
+          clearInterval(interval)
+          setCanResend(true)
+          return 0
+        }
+        return prev - 1
       })
+    }, 1000)
 
-      const data = await res.json()
-      if (!res.ok) {
-        showToast(data.message || "Registration failed.", "error")
-        return
-      }
+    setTimeout(() => {
+      showToast(
+        "Please verify your email before signing in. 📧",
+        "info",
+        7000
+      )
+    }, 2500)
 
-      setLastRegisteredEmail(form.email)
+    // 🔥 LIMPAR FORM POR ÚLTIMO (IMPORTANTE!)
+    setForm({ name: "", email: "", password: "" })
 
-      showToast("Account created successfully!", "success")
-      setShowConfirmPassword(false)
-      setConfirmPassword("")
-      setAgreed(false)
-      setIsRegister(false)
-      setShowResendSection(true)
-
-      setForm({ name: "", email: "", password: "" })
-
-      setCanResend(false)
-      setCounter(30)
-
-      const interval = setInterval(()=>{
-        setCounter(prev=>{
-          if(prev==1){
-            clearInterval(interval)
-            setCanResend(true)
-            return 0
-          }
-          return prev - 1
-        })
-      },1000)
-
-      setTimeout(() => {
-        showToast(
-          "Please verify your email before signing in. 📧",
-          "info",
-          7000
-        )
-      }, 2500)
-
-    } catch (err) {
-      showToast("Server error — please try again later.", "error")
-    }
+  } catch (err) {
+    showToast("Server error — please try again later.", "error")
   }
+}
+
 
   /* --------------------------- LOGIN --------------------------- */
   const handleSignIn = async (e) => {
