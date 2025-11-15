@@ -97,7 +97,17 @@ function Authentication() {
     setForm({ ...form, [e.target.name]: e.target.value })
 
   /* --------------------------- SIGNUP --------------------------- */
-const confirmSignup = async () => {
+  const handleSignup = (e) => {
+    e.preventDefault()
+    if (!agreed)
+      return showToast("Please agree to the terms & conditions.", "error")
+    if (form.password.length < 6)
+      return showToast("Password must have at least 6 characters.", "error")
+
+    setShowConfirmPassword(true)
+  }
+
+  const confirmSignup = async () => {
   if (confirmPassword !== form.password) {
     showToast("Passwords do not match!", "error")
     return
@@ -160,7 +170,6 @@ const confirmSignup = async () => {
     showToast("Server error — please try again later.", "error")
   }
 }
-
 
   /* --------------------------- LOGIN --------------------------- */
   const handleSignIn = async (e) => {
