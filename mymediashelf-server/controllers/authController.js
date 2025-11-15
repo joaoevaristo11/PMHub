@@ -1,10 +1,9 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import User from "../models/User.js"
-import { generateVerificationToken } from "../utils/generateVerificationToken.js"
+import { generateVerificationToken, createRefreshToken } from "../utils/generateVerificationToken.js"
 import { createVerificationLink } from "../utils/createVerificationLink.js"
 import { sendVerificationEmail } from "../utils/sendVerificationEmail.js"
-
 
 // ---------- REGISTO ----------
 export const register = async (req, res) => {
@@ -64,11 +63,8 @@ export const verifyEmail = async (req, res) => {
 // ---------- LOGIN ----------
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body
-
-    console.log("📥 Login recebido para:", email)
+    const { email, password, rememberMe } = req.body
     const existingUser = await User.findOne({ email })
-    console.log("🔍 Resultado da pesquisa:", existingUser)
 
     if (!existingUser)
       return res.status(404).json({ message: "User not found" })
@@ -84,28 +80,39 @@ export const login = async (req, res) => {
     if (existingUser.firstLogin === undefined || existingUser.firstLogin === true) {
       isFirstLogin = true
       existingUser.firstLogin = false
-      await existingUser.save()
     }
 
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    })
+    const accessToken = generateVerificationToken(existingUser._id);
+    const refreshToken = createRefreshToken(existingUser._id);
 
-    res.status(200).json({
+    if(rememberMe){
+      existingUser.refreshToken = refreshToken
+      existingUser.refreshTokenExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 dias
+    }else{
+      // se não tiver rememberMe, limpamos qualquer refreshToken antigo
+      existingUser.refreshToken = undefined;
+      existingUser.refreshTokenExpires = undefined;
+    }
+
+    await existingUser.save();
+
+
+    return res.status(200).json({
       message: isFirstLogin
         ? "Welcome! This is your first login 🎉"
         : "Welcome back!",
       firstLogin: isFirstLogin,
-      token,
+      token: accessToken,
+      refreshToken: rememberMe ? refreshToken : null, // só mandamos refreshToken se rememberMe = true
       user: {
         id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
       },
-    })
+    });
   } catch (err) {
-    console.error("Login error:", err)
-    res.status(500).json({ message: "Login error", error: err.message })
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Login error", error: err.message });
   }
 }
 
@@ -145,4 +152,53 @@ export const resendVerification = async (req, res) => {
     res.status(500).json({ message: "Server error" })
   }
 }
+
+export const refreshAccessToken = async (req, res)=>{
+  try{
+    const{refreshToken} = req.body
+    if(!refreshAccessToken){
+      return res.status(401).json({message: "Missing refresh token"})
+    }
+
+    let decoded
+    try{
+      decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+    }catch(err){
+      return res.status(401).json({message:"Invalid or expired refresh token"})
+    }
+
+    const user = await User.findById(decoded.id)
+    if(!user){
+      return res.status(401).json({message: "User not found"})
+    }
+
+    if(!user.refreshToken || user.refreshToken!==refreshToken || !user.refreshTokenExpires || 
+      user.refreshTokenExpires.getTime()<Date.now()){
+        return res.status(401).json({message: "Refresh token not valid anymore"})
+    }
+
+    const newAccessToken = generateVerificationToken(user.id)
+    return res.status(200).json({token: newAccessToken})
+  }catch(err){
+    console.error("Refresh error:", err);
+    res.status(500).json({ message: "Error refreshing token" });
+  }
+}
+
+
+export const logout = async (req, res) => {
+  try {
+    const { userId } = req; // vindo do authMiddleware
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.refreshToken = undefined;
+    user.refreshTokenExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Logged out successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Logout error" });
+  }
+};
 

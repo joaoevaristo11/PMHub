@@ -27,8 +27,67 @@ function Authentication() {
   /* --------------------------- AUTH CHECK --------------------------- */
   useEffect(() => {
     const token = localStorage.getItem("token")
-    if (token) fetchProfile(token)
+    if (token) fetchProfileWithRefresh(token)
   }, [])
+
+  const fetchProfileWithRefresh = async (accessToken) => {
+  try {
+    const res = await fetch(`${API_URL}/me`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+
+    if (res.status === 401) {
+      // 🔥 tentar refresh
+      const refreshToken = localStorage.getItem("refreshToken")
+      if (!refreshToken) {
+        localStorage.removeItem("token")
+        return
+      }
+
+      const refreshRes = await fetch(`${API_URL}/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      })
+
+      const refreshData = await refreshRes.json()
+
+      if (!refreshRes.ok || !refreshData.token) {
+        // refresh falhou → limpar tudo
+        localStorage.removeItem("token")
+        localStorage.removeItem("refreshToken")
+        return
+      }
+
+      // guardar novo access token e tentar outra vez /me
+      localStorage.setItem("token", refreshData.token)
+
+      const retry = await fetch(`${API_URL}/me`, {
+        headers: { Authorization: `Bearer ${refreshData.token}` },
+      })
+
+      if (!retry.ok) {
+        localStorage.removeItem("token")
+        localStorage.removeItem("refreshToken")
+        return
+      }
+
+      const retryData = await retry.json()
+      setLoggedInUser(retryData.user)
+      return
+    }
+
+    if (!res.ok) {
+      localStorage.removeItem("token")
+      return
+    }
+
+    const data = await res.json()
+    setLoggedInUser(data.user)
+  } catch (err) {
+    console.error("Error fetching profile:", err)
+  }
+}
 
   const showToast = (message, type = "info", duration = 3000) => {
     setToast({ message, type })
@@ -113,7 +172,7 @@ function Authentication() {
           "info",
           7000
         )
-      }, 1500)
+      }, 2500)
 
     setForm({ name: "", email: "", password: "" })
 
@@ -134,6 +193,7 @@ function Authentication() {
         body: JSON.stringify({
           email: form.email,
           password: form.password,
+          rememberMe
         }),
       })
 
@@ -146,7 +206,7 @@ function Authentication() {
         return
       }
 
-      const { token, user, firstLogin } = data
+      const { token, refreshToken, user, firstLogin } = data
 
       setLoggedInUser({ ...user, firstLogin })
 
@@ -158,10 +218,14 @@ function Authentication() {
       )
 
       localStorage.setItem("token", token)
-      if (rememberMe)
-        localStorage.setItem("RememberedUser", JSON.stringify(user))
+      if (rememberMe && refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken)
+      } else {
+        localStorage.removeItem("refreshToken")
+      }
+
     } catch (err) {
-      showToast("Connection error. Check your server.", "error")
+    showToast("Connection error. Check your server.", "error")
     }
   }
 
