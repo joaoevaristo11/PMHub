@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import "./Authentication.css"
 import { createPortal } from "react-dom"
-import { div, p } from "framer-motion/client"
 
 const API_URL = "https://justtakes.onrender.com/api/auth"
 
@@ -94,20 +93,6 @@ function Authentication() {
     setTimeout(() => setToast({ message: "", type: "" }), duration)
   }
 
-  const fetchProfile = async (token) => {
-    try {
-      const res = await fetch(`${API_URL}/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-
-      if (!res.ok) throw new Error("Invalid token")
-      const data = await res.json()
-      setLoggedInUser(data.user)
-    } catch (err) {
-      localStorage.removeItem("token")
-    }
-  }
-
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value })
 
@@ -174,9 +159,6 @@ function Authentication() {
         )
       }, 2500)
 
-    setForm({ name: "", email: "", password: "" })
-
-
     } catch (err) {
       showToast("Server error — please try again later.", "error")
     }
@@ -193,7 +175,7 @@ function Authentication() {
         body: JSON.stringify({
           email: form.email,
           password: form.password,
-          rememberMe
+          rememberMe,
         }),
       })
 
@@ -225,44 +207,34 @@ function Authentication() {
       }
 
     } catch (err) {
-    showToast("Connection error. Check your server.", "error")
+      showToast("Connection error. Check your server.", "error")
     }
   }
 
   /* --------------------------- LOGOUT --------------------------- */
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token")
+
+      if (token) {
+        // tenta limpar refreshToken na BD também
+        await fetch(`${API_URL}/logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      }
+    } catch (err) {
+      console.error("Logout error:", err)
+    }
+
     localStorage.removeItem("token")
-    localStorage.removeItem("RememberedUser")
+    localStorage.removeItem("refreshToken")
     setLoggedInUser(null)
     setForm({ name: "", email: "", password: "" })
     showToast("You have logged out.", "info")
-  }
-
-  /* --------------------------- LOGGED IN VIEW --------------------------- */
-  if (loggedInUser) {
-    return (
-      <div className="welcome-message">
-        <h2>
-          {loggedInUser.firstLogin ? (
-            <>
-              Welcome, <span>{loggedInUser.name}</span>!
-            </>
-          ) : (
-            <>
-              Welcome back, <span>{loggedInUser.name}</span>!
-            </>
-          )}
-        </h2>
-        <p>
-          {loggedInUser.firstLogin
-            ? "Your account is ready — explore PMHub 🎉"
-            : "We're happy to see you again 💫"}
-        </p>
-        <button className="btn logout-btn" onClick={handleLogout}>
-          Log Out
-        </button>
-      </div>
-    )
   }
 
   const handleResend = async ()=>{
@@ -321,7 +293,32 @@ function Authentication() {
     }
   }
 
-
+  /* --------------------------- LOGGED IN VIEW --------------------------- */
+  if (loggedInUser) {
+    return (
+      <div className="welcome-message">
+        <h2>
+          {loggedInUser.firstLogin ? (
+            <>
+              Welcome, <span>{loggedInUser.name}</span>!
+            </>
+          ) : (
+            <>
+              Welcome back, <span>{loggedInUser.name}</span>!
+            </>
+          )}
+        </h2>
+        <p>
+          {loggedInUser.firstLogin
+            ? "Your account is ready — explore PMHub 🎉"
+            : "We're happy to see you again 💫"}
+        </p>
+        <button className="btn logout-btn" onClick={handleLogout}>
+          Log Out
+        </button>
+      </div>
+    )
+  }
   /* --------------------------- LOGIN / REGISTER PANEL --------------------------- */
   return (
     <div className={`auth-panel ${isRegister ? "active" : ""}`}>
