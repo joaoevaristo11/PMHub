@@ -1,64 +1,73 @@
-import { useState, useEffect } from "react";
-import "./Authentication.css";
-import { createPortal } from "react-dom";
+import { useState, useEffect } from "react"
+import "./Authentication.css"
+import { createPortal } from "react-dom"
 
-const API_URL = "https://justtakes.onrender.com/api/auth";
+const API_URL = "https://justtakes.onrender.com/api/auth"
 
 function Authentication() {
-  const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [agreed, setAgreed] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
-  const [loginError, setLoginError] = useState(false);
-  const [toast, setToast] = useState({ message: "", type: "" });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isRegister, setIsRegister] = useState(false)
+  const [form, setForm] = useState({ name: "", email: "", password: "" })
+  const [agreed, setAgreed] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+  const [loggedInUser, setLoggedInUser] = useState(null)
+  const [loginError, setLoginError] = useState(false)
+  const [toast, setToast] = useState({ message: "", type: "" })
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState("")
+
+  // 🔥 NOVO — Email guardado do registo
+  const [lastRegisteredEmail, setLastRegisteredEmail] = useState("")
+
+  // resend system
+  const [canResend, setCanResend] = useState(false)
+  const [counter, setCounter] = useState(30)
+  const [showResendSection, setShowResendSection] = useState(false)
 
   /* --------------------------- AUTH CHECK --------------------------- */
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) fetchProfile(token);
-  }, []);
+    const token = localStorage.getItem("token")
+    if (token) fetchProfile(token)
+  }, [])
 
   const showToast = (message, type = "info", duration = 3000) => {
-    setToast({ message, type });
-    setTimeout(() => setToast({ message: "", type: "" }), duration);
-  };
+    setToast({ message, type })
+    setTimeout(() => setToast({ message: "", type: "" }), duration)
+  }
 
   const fetchProfile = async (token) => {
     try {
       const res = await fetch(`${API_URL}/me`, {
         headers: { Authorization: `Bearer ${token}` },
-      });
+      })
 
-      if (!res.ok) throw new Error("Invalid token");
-      const data = await res.json();
-      setLoggedInUser(data.user);
+      if (!res.ok) throw new Error("Invalid token")
+      const data = await res.json()
+      setLoggedInUser(data.user)
     } catch (err) {
-      localStorage.removeItem("token");
+      localStorage.removeItem("token")
     }
-  };
+  }
 
   const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value })
 
   /* --------------------------- SIGNUP --------------------------- */
   const handleSignup = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!agreed)
-      return showToast("Please agree to the terms & conditions.", "error");
+      return showToast("Please agree to the terms & conditions.", "error")
     if (form.password.length < 6)
-      return showToast("Password must have at least 6 characters.", "error");
+      return showToast("Password must have at least 6 characters.", "error")
 
-    setShowConfirmPassword(true);
-  };
+    setShowConfirmPassword(true)
+  }
+
 
   const confirmSignup = async () => {
     if (confirmPassword !== form.password) {
-      showToast("Passwords do not match!", "error");
-      return;
+      showToast("Passwords do not match!", "error")
+      return
     }
 
     try {
@@ -66,36 +75,97 @@ function Authentication() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
       if (!res.ok) {
-        showToast(data.message || "Registration failed.", "error");
-        return;
+        showToast(data.message || "Registration failed.", "error")
+        return
       }
 
-      showToast("Account created successfully!", "success");
-      setShowConfirmPassword(false);
-      setConfirmPassword("");
-      setForm({ name: "", email: "", password: "" });
-      setAgreed(false);
-      setIsRegister(false);
+      // 🔥 Guardar email ANTES de limpar o formulário
+      setLastRegisteredEmail(form.email)
 
+      showToast("Account created successfully!", "success")
+      setShowConfirmPassword(false)
+      setConfirmPassword("")
+      setAgreed(false)
+      setIsRegister(false)
+      setShowResendSection(true)
+
+      // limpar form
+      setForm({ name: "", email: "", password: "" })
+
+      // iniciar cooldown
+      setCanResend(false)
+      setCounter(30)
+
+      const interval = setInterval(() => {
+        setCounter(prev => {
+          if (prev === 1) {
+            clearInterval(interval)
+            setCanResend(true)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+
+      // mensagem de verificação
       setTimeout(() => {
         showToast(
           "Please verify your email before signing in. 📧",
           "info",
           7000
-        );
-      }, 1500);
+        )
+      }, 1500)
+
     } catch (err) {
-      showToast("Server error — please try again later.", "error");
+      showToast("Server error — please try again later.", "error")
     }
-  };
+  }
+
+  /* --------------------------- RESEND EMAIL --------------------------- */
+  const handleResend = async () => {
+    try {
+      const res = await fetch(`${API_URL}/resend-verification`, {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ email: lastRegisteredEmail })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        showToast(data.message || "Failed to resend email.", "error")
+        return
+      }
+
+      showToast("Verification email resent! 📧", "success")
+
+      // restart cooldown
+      setCanResend(false)
+      setCounter(30)
+
+      const interval = setInterval(() => {
+        setCounter(prev => {
+          if (prev === 1) {
+            clearInterval(interval)
+            setCanResend(true)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+
+    } catch (err) {
+      showToast("Server error — please try again later.", "error")
+    }
+  }
 
   /* --------------------------- LOGIN --------------------------- */
   const handleSignIn = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       const res = await fetch(`${API_URL}/login`, {
@@ -105,98 +175,50 @@ function Authentication() {
           email: form.email,
           password: form.password,
         }),
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
 
       if (!res.ok) {
-        setLoginError(true);
-        setTimeout(() => setLoginError(false), 600);
-        showToast(data.message || "Invalid credentials.", "error");
-        return;
+        setLoginError(true)
+        setTimeout(() => setLoginError(false), 600)
+        showToast(data.message || "Invalid credentials.", "error")
+        return
       }
 
-      const { token, user, firstLogin } = data;
+      const { token, user, firstLogin } = data
 
-      setLoggedInUser({ ...user, firstLogin });
+      setLoggedInUser({ ...user, firstLogin })
 
       showToast(
         firstLogin
           ? `Welcome, ${user.name}! Your account is ready 🎉`
           : `Welcome back, ${user.name}!`,
         "success"
-      );
+      )
 
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", token)
       if (rememberMe)
-        localStorage.setItem("RememberedUser", JSON.stringify(user));
+        localStorage.setItem("RememberedUser", JSON.stringify(user))
     } catch (err) {
-      showToast("Connection error. Check your server.", "error");
+      showToast("Connection error. Check your server.", "error")
     }
-  };
+  }
 
   /* --------------------------- LOGOUT --------------------------- */
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("RememberedUser");
-    setLoggedInUser(null);
-    setForm({ name: "", email: "", password: "" });
-    showToast("You have logged out.", "info");
-  };
-
-  /* --------------------------- LOGGED IN VIEW --------------------------- */
-  if (loggedInUser) {
-    return (
-      <div className="welcome-message">
-        <h2>
-          {loggedInUser.firstLogin ? (
-            <>
-              Welcome, <span>{loggedInUser.name}</span>!
-            </>
-          ) : (
-            <>
-              Welcome back, <span>{loggedInUser.name}</span>!
-            </>
-          )}
-        </h2>
-        <p>
-          {loggedInUser.firstLogin
-            ? "Your account is ready — explore PMHub 🎉"
-            : "We're happy to see you again 💫"}
-        </p>
-        <button className="btn logout-btn" onClick={handleLogout}>
-          Log Out
-        </button>
-      </div>
-    );
+    localStorage.removeItem("token")
+    localStorage.removeItem("RememberedUser")
+    setLoggedInUser(null)
+    setForm({ name: "", email: "", password: "" })
+    showToast("You have logged out.", "info")
   }
 
-  const handleEnterConfirm = (e)=>{
-    if(e.key=="Enter"){
-      e.preventDefault()
-      confirmSignup()
-    }
-  }
-
-  const handleEnterSignUp = (e)=>{
-    if(e.key=="Enter"){
-      e.preventDefault()
-      handleSignup(e)
-    }
-  }
-
-    const handleEnterSignIn = (e)=>{
-    if(e.key=="Enter"){
-      e.preventDefault()
-      handleSignIn(e)
-    }
-  }
-
-
-  /* --------------------------- LOGIN / REGISTER PANEL --------------------------- */
+  /* --------------------------- LOGIN/REGISTER PANEL --------------------------- */
   return (
     <div className={`auth-panel ${isRegister ? "active" : ""}`}>
-      {/* ---------- Sign In ---------- */}
+
+      {/* LOGIN */}
       <div className={`form-box login ${loginError ? "shake" : ""}`}>
         <form onSubmit={handleSignIn}>
           <h2>Sign In</h2>
@@ -219,15 +241,10 @@ function Authentication() {
             <span
               className="icon"
               onClick={() => setShowPassword(!showPassword)}
-              style={{ cursor: "pointer" }}
             >
               <img
-                src={
-                  showPassword
-                    ? "/images/cadeado-aberto.png"
-                    : "/images/cadeado.png"
-                }
-                alt="toggle password visibility"
+                src={showPassword ? "/images/cadeado-aberto.png" : "/images/cadeado.png"}
+                alt="toggle password"
               />
             </span>
             <input
@@ -236,7 +253,6 @@ function Authentication() {
               value={form.password}
               onChange={handleChange}
               required
-              onKeyDown={handleEnterSignIn}
             />
             <label>Password</label>
           </div>
@@ -253,23 +269,36 @@ function Authentication() {
             <a href="#">Forgot password?</a>
           </div>
 
-          <button type="submit" className="btn">
-            Sign In
-          </button>
+          <button type="submit" className="btn">Sign In</button>
+
+          {/* RESEND EMAIL SECTION */}
+          {showResendSection && (
+            <div className="resend-area">
+              {!canResend ? (
+                <p>
+                  Didn’t receive the verification email?  
+                  Resend in <strong>{counter}s</strong>
+                </p>
+              ) : (
+                <button className="btn resend-btn" onClick={handleResend}>
+                  Resend Verification Email
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="login-register">
             <p>
               Don't have an account?
               <a href="#" className="Bold" onClick={() => setIsRegister(true)}>
-                {" "}
-                Sign up
+                {" "}Sign up
               </a>
             </p>
           </div>
         </form>
       </div>
 
-      {/* ---------- Sign Up ---------- */}
+      {/* SIGN UP */}
       <div className="form-box register">
         <form>
           <h2>Sign Up</h2>
@@ -303,19 +332,8 @@ function Authentication() {
           </div>
 
           <div className="input-box">
-            <span
-              className="icon"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={
-                  showPassword
-                    ? "/images/cadeado-aberto.png"
-                    : "/images/cadeado.png"
-                }
-                alt="toggle password visibility"
-              />
+            <span className="icon" onClick={() => setShowPassword(!showPassword)}>
+              <img src={showPassword ? "/images/cadeado-aberto.png" : "/images/cadeado.png"} />
             </span>
             <input
               type={showPassword ? "text" : "password"}
@@ -323,7 +341,6 @@ function Authentication() {
               value={form.password}
               onChange={handleChange}
               required
-              onKeyDown={handleEnterSignUp}
             />
             <label>Password</label>
           </div>
@@ -339,23 +356,20 @@ function Authentication() {
             </label>
           </div>
 
-          <button type="button" className="btn" onClick={handleSignup} >
+          <button type="button" className="btn" onClick={handleSignup}>
             Sign Up
           </button>
 
           <div className="login-register">
             <p>
               Already have an account?
-              <a href="#" onClick={() => setIsRegister(false)}>
-                {" "}
-                Sign In
-              </a>
+              <a href="#" onClick={() => setIsRegister(false)}> Sign In</a>
             </p>
           </div>
         </form>
       </div>
 
-      {/* ---------- Confirm Password Popup ---------- */}
+      {/* CONFIRM PASSWORD POPUP */}
       {showConfirmPassword &&
         createPortal(
           <div className="confirm-overlay">
@@ -367,11 +381,10 @@ function Authentication() {
                 placeholder="Re-enter password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                onKeyDown={handleEnterConfirm}
               />
 
               <div className="confirm-actions">
-                <button className="btn" onClick={confirmSignup} >
+                <button className="btn" onClick={confirmSignup}>
                   Confirm
                 </button>
                 <button
@@ -386,7 +399,7 @@ function Authentication() {
           document.body
         )}
 
-      {/* ---------- Toast ---------- */}
+      {/* TOAST */}
       {toast.message &&
         createPortal(
           <div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>
@@ -395,7 +408,7 @@ function Authentication() {
           document.body
         )}
     </div>
-  );
+  )
 }
 
-export default Authentication;
+export default Authentication

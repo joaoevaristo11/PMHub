@@ -1,79 +1,44 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import fetch from "node-fetch" // ⚡ usamos fetch em vez de nodemailer
 import User from "../models/User.js"
+import { generateVerificationToken } from "../utils/generateVerificationToken.js"
+import { createVerificationLink } from "../utils/createVerificationLink.js"
+import { sendVerificationEmail } from "../utils/sendVerificationEmail.js"
+
 
 // ---------- REGISTO ----------
 export const register = async (req, res) => {
   try {
-    console.log("🟢 [REGISTER] Pedido recebido:", req.body)
     const { name, email, password } = req.body
 
-    // 🔹 Verificar se o email já existe
-    console.log("📩 A verificar se o email existe...")
     const existingUser = await User.findOne({ email })
-    if (existingUser) {
-      console.log("❌ Email já registado:", email)
+    if (existingUser)
       return res.status(400).json({ message: "Email already registered" })
-    }
 
-    // 🔹 Encriptar password
-    console.log("🔐 A encriptar password...")
     const hashedPassword = await bcrypt.hash(password, 10)
-
-    // 🔹 Criar novo utilizador
-    const newUser = new User({ name, email, password: hashedPassword, verified: false })
-    await newUser.save()
-    console.log("✅ Utilizador criado:", newUser._id)
-
-    // 🔹 Gerar token de verificação
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" })
-
-    const frontendUrl =
-      process.env.NODE_ENV === "production"
-        ? "https://justtakes.vercel.app" // 👈 frontend (Vercel)
-        : "http://localhost:5173";        // 👈 local frontend (Vite)
-
-    const verifyUrl = `${frontendUrl}/verify?token=${token}`;
-
-    console.log("🔗 URL de verificação:", verifyUrl)
-
-    // ---------- Enviar email via Brevo API ----------
-    console.log("📨 A enviar email de verificação via Brevo API...")
-    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "accept": "application/json",
-        "api-key": process.env.BREVO_API_KEY,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        sender: { name: "JustTakes", email: "contact.justtakes@gmail.com" },
-        to: [{ email }],
-        subject: "Verify your JustTakes account",
-        htmlContent: `
-          <h2>Welcome, ${name}!</h2>
-          <p>Thank you for registering on <strong>JustTakes</strong>.</p>
-          <p>Please confirm your email by clicking the link below:</p>
-          <a href="${verifyUrl}" target="_blank">${verifyUrl}</a>
-          <br><br><p>This link will expire in 1 hour.</p>
-        `,
-      }),
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      verified: false
     })
 
-    if (!response.ok) {
-      const errText = await response.text()
-      console.error("❌ Erro ao enviar email via Brevo:", errText)
-      return res.status(500).json({ message: "Failed to send verification email" })
-    }
+    const token = generateVerificationToken(newUser._id)
+    const verifyUrl = createVerificationLink(token)
 
-    console.log("✅ Email de verificação enviado com sucesso via Brevo!")
-    res.status(201).json({ message: "User registered successfully! Please check your email." })
+    const emailSent = await sendVerificationEmail(name, email, verifyUrl)
+
+    if (!emailSent)
+      return res.status(500).json({ message: "Failed to send verification email" })
+
+    return res
+      .status(201)
+      .json({ message: "User registered successfully! Please check your email." })
   } catch (err) {
-    console.error("❌ [REGISTER ERROR]:", err)
     res.status(500).json({ message: "Signup error", error: err.message })
   }
 }
+
 
 // ---------- VERIFICAR EMAIL ----------
 export const verifyEmail = async (req, res) => {
@@ -156,3 +121,28 @@ export const getMe = async (req, res) => {
     res.status(500).json({ message: "Error fetching user", error: err.message })
   }
 }
+
+export const resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body
+    const user = await User.findOne({ email })
+
+    if (!user) return res.status(404).json({ message: "User not found" })
+    if (user.verified)
+      return res.status(400).json({ message: "Account already verified" })
+
+    const token = generateVerificationToken(user._id)
+    const verifyUrl = createVerificationLink(token)
+
+    const emailSent = await sendVerificationEmail(user.name, email, verifyUrl)
+
+    if (!emailSent)
+      return res.status(500).json({ message: "Failed to send verification email" })
+
+    res.json({ message: "Verification email resent successfully!" })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: "Server error" })
+  }
+}
+
