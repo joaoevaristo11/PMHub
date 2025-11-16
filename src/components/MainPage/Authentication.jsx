@@ -108,10 +108,20 @@ function Authentication() {
   }
 
   const confirmSignup = async () => {
-  if (confirmPassword !== form.password) {
-    showToast("Passwords do not match!", "error")
-    return
+  console.log("confirmPassword =", confirmPassword);
+  console.log("form.password =", form.password);
+
+  if (!confirmPassword || !form.password) {
+    showToast("Both passwords are required", "error");
+    return;
   }
+
+  if (confirmPassword !== form.password) {
+    showToast("Passwords do not match!", "error");
+    return;
+  }
+  
+  console.log("PASSA PARA O FETCH");
 
   try {
     const res = await fetch(`${API_URL}/register`, {
@@ -327,218 +337,226 @@ function Authentication() {
     )
   }
   /* --------------------------- LOGIN / REGISTER PANEL --------------------------- */
-  return (
-    <div className={`auth-panel ${isRegister ? "active" : ""}`}>
-      {/* ---------- Sign In ---------- */}
-      <div className={`form-box login ${loginError ? "shake" : ""}`}>
-        <form onSubmit={handleSignIn}>
-          <h2>Sign In</h2>
+return (
+  <div className={`auth-panel ${isRegister ? "active" : ""}`}>
+    {/* ---------- Sign In ---------- */}
+    <div className={`form-box login ${loginError ? "shake" : ""}`}>
+      <form onSubmit={handleSignIn}>
+        <h2>Sign In</h2>
 
-          <div className="input-box">
-            <span className="icon">
-              <img src="/images/envelope.png" alt="email" />
-            </span>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
+        <div className="input-box">
+          <span className="icon">
+            <img src="/images/envelope.png" alt="email" />
+          </span>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <label>Email</label>
+        </div>
+
+        <div className="input-box">
+          <span
+            className="icon"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{ cursor: "pointer" }}
+          >
+            <img
+              src={
+                showPassword
+                  ? "/images/cadeado-aberto.png"
+                  : "/images/cadeado.png"
+              }
+              alt="toggle password visibility"
             />
-            <label>Email</label>
-          </div>
+          </span>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            onKeyDown={handleEnterSignIn}
+          />
+          <label>Password</label>
+        </div>
 
-          <div className="input-box">
-            <span
-              className="icon"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={
-                  showPassword
-                    ? "/images/cadeado-aberto.png"
-                    : "/images/cadeado.png"
-                }
-                alt="toggle password visibility"
-              />
-            </span>
+        <div className="remember-forgot">
+          <label>
             <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              onKeyDown={handleEnterSignIn}
-            />
-            <label>Password</label>
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />{" "}
+            Remember me
+          </label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" className="btn">
+          Sign In
+        </button>
+
+        {showResendSection && (
+          <div className="resend-area">
+            {!canResend ? (
+              <p>
+                Didn't receive the verification email? Resend in{" "}
+                <strong>{counter}s</strong>
+              </p>
+            ) : (
+              <button className="btn resend-btn" onClick={handleResend}>
+                Resend Verification Email
+              </button>
+            )}
           </div>
-
-          <div className="remember-forgot">
-            <label>
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />{" "}
-              Remember me
-            </label>
-            <a href="#">Forgot password?</a>
-          </div>
-
-          <button type="submit" className="btn">
-            Sign In
-          </button>
-
-          {showResendSection && (
-            <div className = "resend-area">
-              {!canResend ? (
-                <p>Didn't receive the verification email? Resend in <strong>{counter}s</strong></p>
-              ):(
-                <button className = "btn resend-btn" onClick={handleResend}>Resend Verification Email</button>
-              )}
-            </div>
-          )}
-
-          <div className="login-register">
-            <p>
-              Don't have an account?
-              <a href="#" className="Bold" onClick={() => setIsRegister(true)}>
-                {" "}
-                Sign up
-              </a>
-            </p>
-          </div>
-        </form>
-      </div>
-
-      {/* ---------- Sign Up ---------- */}
-      <div className="form-box register">
-        <form>
-          <h2>Sign Up</h2>
-
-          <div className="input-box">
-            <span className="icon">
-              <img src="/images/Sample_User_Icon.png" alt="user" />
-            </span>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-            <label>Name</label>
-          </div>
-
-          <div className="input-box">
-            <span className="icon">
-              <img src="/images/envelope.png" alt="email" />
-            </span>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-            <label>Email</label>
-          </div>
-
-          <div className="input-box">
-            <span
-              className="icon"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={
-                  showPassword
-                    ? "/images/cadeado-aberto.png"
-                    : "/images/cadeado.png"
-                }
-                alt="toggle password visibility"
-              />
-            </span>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              onKeyDown={handleEnterSignUp}
-            />
-            <label>Password</label>
-          </div>
-
-          <div className="remember-forgot">
-            <label>
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-              />{" "}
-              I agree to the terms & conditions
-            </label>
-          </div>
-
-          <button type="button" className="btn" onClick={handleSignup} >
-            Sign Up
-          </button>
-
-          <div className="login-register">
-            <p>
-              Already have an account?
-              <a href="#" onClick={() => setIsRegister(false)}>
-                {" "}
-                Sign In
-              </a>
-            </p>
-          </div>
-        </form>
-      </div>
-
-      {/* ---------- Confirm Password Popup ---------- */}
-      {showConfirmPassword &&
-        createPortal(
-          <div className="confirm-overlay">
-            <div className="confirm-box">
-              <h3>Confirm your password</h3>
-              <input
-                autoFocus
-                type="password"
-                placeholder="Re-enter password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                onKeyDown={handleEnterConfirm}
-              />
-
-              <div className="confirm-actions">
-                <button className="btn" onClick={confirmSignup} >
-                  Confirm
-                </button>
-                <button
-                  className="btn cancel-btn"
-                  onClick={() => setShowConfirmPassword(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body
         )}
 
-      {/* ---------- Toast ---------- */}
-      {toast.message &&
-        createPortal(
-          <div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>
-            {toast.message}
-          </div>,
-          document.body
-        )}
+        <div className="login-register">
+          <p>
+            Don't have an account?
+            <a href="#" className="Bold" onClick={() => setIsRegister(true)}>
+              {" "}
+              Sign up
+            </a>
+          </p>
+        </div>
+      </form>
     </div>
-  )
+
+    {/* ---------- Sign Up ---------- */}
+    <div className="form-box register">
+      <form onSubmit={(e) => e.preventDefault()}>
+        <h2>Sign Up</h2>
+
+        <div className="input-box">
+          <span className="icon">
+            <img src="/images/Sample_User_Icon.png" alt="user" />
+          </span>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+          <label>Name</label>
+        </div>
+
+        <div className="input-box">
+          <span className="icon">
+            <img src="/images/envelope.png" alt="email" />
+          </span>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <label>Email</label>
+        </div>
+
+        <div className="input-box">
+          <span
+            className="icon"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{ cursor: "pointer" }}
+          >
+            <img
+              src={
+                showPassword
+                  ? "/images/cadeado-aberto.png"
+                  : "/images/cadeado.png"
+              }
+              alt="toggle password visibility"
+            />
+          </span>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            onKeyDown={handleEnterSignUp}
+          />
+          <label>Password</label>
+        </div>
+
+        <div className="remember-forgot">
+          <label>
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />{" "}
+            I agree to the terms & conditions
+          </label>
+        </div>
+
+        <button type="button" className="btn" onClick={handleSignup}>
+          Sign Up
+        </button>
+
+        <div className="login-register">
+          <p>
+            Already have an account?
+            <a href="#" onClick={() => setIsRegister(false)}>
+              {" "}
+              Sign In
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    {/* ---------- Confirm Password Popup ---------- */}
+    {showConfirmPassword &&
+      createPortal(
+        <div className="confirm-overlay">
+          <div className="confirm-box">
+            <h3>Confirm your password</h3>
+            <input
+              autoFocus
+              type="password"
+              placeholder="Re-enter password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onKeyDown={handleEnterConfirm}
+            />
+
+            <div className="confirm-actions">
+              <button className="btn" type="button" onClick={confirmSignup}>
+                Confirm
+              </button>
+
+              <button
+                className="btn cancel-btn"
+                type="button"
+                onClick={() => setShowConfirmPassword(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+    {/* ---------- Toast ---------- */}
+    {toast.message &&
+      createPortal(
+        <div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>
+          {toast.message}
+        </div>,
+        document.body
+      )}
+  </div>
+);
+
 }
 
 export default Authentication
