@@ -11,8 +11,16 @@ export const register = async (req, res) => {
     const { name, email, password } = req.body
 
     const existingUser = await User.findOne({ email })
-    if (existingUser)
-      return res.status(400).json({ message: "Email already registered" })
+    if (existingUser){
+      const TWENTY_MINUTES = 20 * 60 * 1000
+
+      if(!existingUser.verified && (Date.now()-existingUser.createdAt.getTime())>TWENTY_MINUTES){
+        await User.findByIdAndDelete(existingUser)
+      }else{
+        return res.status(400).json({ message: "Email already registered" })
+      }
+
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = await User.create({
@@ -67,9 +75,15 @@ export const verifyEmail = async (req, res) => {
       .json({ status: "ok", message: "Email verified successfully ✅" })
   } catch (err) {
     console.error("Verify email error:", err)
-    res
-      .status(400)
-      .json({ status: "error", message: "Invalid or expired token ❌" })
+
+    if(err.name === "TokenExpiredError"){
+      const decoded = jwt.decode(req.query.token)
+      if(decoded?.id){
+        await User.findByIdAndDelete(decoded.id)
+      }
+      return res.status(400).json({status: "error",message: "Verification link expired — please sign up again."})
+    }
+    res.status(400).json({ status: "error", message: "Invalid or expired token ❌" })
   }
 }
 

@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   firstLogin:{type: Boolean, default: true},
   refreshToken: { type: String },
   refreshTokenExpires: { type: Date },
-})
+}, { timestamps: true })
 
 
 
